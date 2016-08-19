@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "44077587914",
+    "firebase_url": "https://dedakia2-2f9d5.firebaseio.com",
+    "project_id": "dedakia2-2f9d5",
+    "storage_bucket": "dedakia2-2f9d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44077587914:android:7cbeb6bb4d592539",
+        "android_client_info": {
+          "package_name": "com.rntest.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44077587914-6us55c0kks4v7ag9blctcrf1kpspr3ct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo5SZC6UEWDcWE63VeSycR5PMj1hyIpfY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
