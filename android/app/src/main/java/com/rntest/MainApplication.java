@@ -15,6 +15,7 @@ import com.airbnb.android.react.maps.MapsPackage;
 import com.reactnativerecordsound.ReactNativeRecordSoundPackager;
 import com.rnfs.RNFSPackage;
 import com.zmxv.RNSound.RNSoundPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +36,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MapsPackage(),
           new ReactNativeRecordSoundPackager(),
           new RNFSPackage(),
-          new RNSoundPackage()
+          new RNSoundPackage(),
+          new RNFetchBlobPackage()
       );
     }
   };

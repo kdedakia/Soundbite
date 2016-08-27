@@ -1,8 +1,6 @@
 package com.rntest;
 
 import com.facebook.react.ReactActivity;
-// import com.airbnb.android.react.maps.MapsPackage;
-// import com.auth0.lock.react.LockReactPackage;
 
 public class MainActivity extends ReactActivity {
 

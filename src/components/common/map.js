@@ -73,6 +73,8 @@ export default class MapBox extends Component {
   }
 
   componentDidMount() {
+    this.props.fetchMarkers();
+
     var self = this;
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -81,7 +83,7 @@ export default class MapBox extends Component {
         self.changeLocation(position);
       },
       (error) => alert(error),
-      {enableHighAccuracy: false, timeout: 10000, maximumAge: 1000}
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
     this.watchID = navigator.geolocation.watchPosition((position) => {
       var lastPosition = JSON.stringify(position);

@@ -4,6 +4,8 @@ import {
   SET_POSITION,
   SHOW_MAKE,
   SHOW_VIEW,
+  REQUEST_MARKERS,
+  RECEIVE_MARKERS
 } from '../actions/markers';
 
 const initialState = {
@@ -14,6 +16,7 @@ const initialState = {
   overlay: null,
   popup: null,
   settings: null,
+  isFetching: false
 }
 
 export default function reducer(state=initialState, action) {
@@ -45,6 +48,14 @@ export default function reducer(state=initialState, action) {
       }
       console.log("ERROR: COULDN'T FIND MARKER");
       return Object.assign({}, state, {currMarker: null})
+    case REQUEST_MARKERS:
+      return Object.assign({}, state, {isFetching: true})
+    case RECEIVE_MARKERS:
+      var markers = [];
+      for (key in action.json) {
+        markers.push(action.json[key]);
+      }
+      return Object.assign({}, state, {isFetching: false, lastUpdated: action.receivedAt, markersList: markers})
     default:
       return state
   }
