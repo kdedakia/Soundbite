@@ -5,7 +5,9 @@ import {
   SHOW_MAKE,
   SHOW_VIEW,
   REQUEST_MARKERS,
-  RECEIVE_MARKERS
+  RECEIVE_MARKERS,
+  REQUEST_BITE,
+  RECEIVE_BITE
 } from '../actions/markers';
 
 const initialState = {
@@ -16,7 +18,8 @@ const initialState = {
   overlay: null,
   popup: null,
   settings: null,
-  isFetching: false
+  isFetching: false,
+  fetchingBite: false,
 }
 
 export default function reducer(state=initialState, action) {
@@ -56,6 +59,10 @@ export default function reducer(state=initialState, action) {
         markers.push(action.json[key]);
       }
       return Object.assign({}, state, {isFetching: false, lastUpdated: action.receivedAt, markersList: markers})
+    case REQUEST_BITE:
+      return Object.assign({}, state, {fetchingBite: true})
+    case RECEIVE_BITE:
+      return Object.assign({}, state, {fetchingBite: false})
     default:
       return state
   }

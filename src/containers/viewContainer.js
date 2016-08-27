@@ -7,7 +7,8 @@ import * as MarkerActions from '../actions/markers';
 function mapStateToProps(state) {
   return {
     overlay: state.markers.overlay,
-    currMarker: state.markers.currMarker
+    currMarker: state.markers.currMarker,
+    fetchingBite: state.markers.fetchingBite
   }
 }
 

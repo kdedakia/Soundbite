@@ -26,8 +26,14 @@ export default class ViewBite extends Component {
     }
   }
 
-  playSound() {
+  playSound(file) {
     var self = this;
+
+    if (this.props.fetchingBite) {
+      alert("STILL DOWNLOADING BITE");
+      return;
+    }
+
     if (this.state.isPlaying) {
       this.setState({sound:null,isPlaying:false});
       this.state.sound.stop();
@@ -35,7 +41,7 @@ export default class ViewBite extends Component {
       return;
     }
 
-    var bite = new Sound(this.props.currMarker.id + '.mp4', pathPrefix, (error) => {
+    var bite = new Sound(file, pathPrefix, (error) => {
       if (error) {
         console.log('failed to load the sound', error);
       } else { // loaded successfully
@@ -73,9 +79,16 @@ export default class ViewBite extends Component {
           <Text style={OverlayStyles.btnText}>ID: { this.props.currMarker.id }</Text>
           <Text style={OverlayStyles.btnText}>Title: { this.props.currMarker.title }</Text>
           <Text style={OverlayStyles.btnText}>Duration: { this.props.currMarker.duration }</Text>
+          <Text style={OverlayStyles.btnText}>File: { this.props.currMarker.file }</Text>
         </View>
       )
     }
+
+    let loading;
+    if (this.props.fetchingBite) {
+      loading = <Text>Loading Bite...</Text>
+    }
+
     return (
       <Modal
         animationType={this.state.animationType}
@@ -91,7 +104,9 @@ export default class ViewBite extends Component {
               </TouchableHighlight>
             </View>
 
-            <TouchableHighlight onPress={this.playSound.bind(this)} style={OverlayStyles.okBtn}>
+            {loading}
+
+            <TouchableHighlight onPress={this.playSound.bind(this,"current.mp4")} style={OverlayStyles.okBtn}>
                 <Icon name="md-play" style={OverlayStyles.actionButtonIcon} />
             </TouchableHighlight>
 

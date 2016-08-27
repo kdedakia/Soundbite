@@ -1,4 +1,5 @@
 // import fetch from 'isomorphic-fetch'
+import * as DB from '../utils/database'
 
 export const ADD_MARKER = 'ADD_MARKER'
 export const SET_MARKER = 'SET_MARKER'
@@ -8,7 +9,8 @@ export const SHOW_VIEW = 'SHOW_VIEW'
 
 export const REQUEST_MARKERS = 'REQUEST_MARKERS'
 export const RECEIVE_MARKERS = 'RECEIVE_MARKERS'
-
+export const REQUEST_BITE = 'REQUEST_BITE'
+export const RECEIVE_BITE = 'RECEIVE_BITE'
 
 export function addMarker(data) {
   return { type: ADD_MARKER, data }
@@ -51,6 +53,25 @@ export function fetchMarkers(loc) {
       .then(json => dispatch(receiveMarkers(loc,json)))
   }
 }
+
+function requestBite(file) {
+  return { type: REQUEST_BITE, file }
+}
+
+function receiveBite(file) {
+  return { type : RECEIVE_BITE, file }
+}
+
+export function fetchBite(file) {
+  return dispatch => {
+    dispatch(requestBite(file))
+    DB.getFile(file)
+      .then(() => {
+        dispatch(receiveBite(file))
+      })
+  }
+}
+
 
 
 // TODO: use these functions

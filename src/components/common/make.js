@@ -14,41 +14,11 @@ import Dimensions from 'Dimensions';
 import MapView from 'react-native-maps';
 import OverlayStyles from '../../styles/overlay';
 import Icon from 'react-native-vector-icons/Ionicons';
-import RNFetchBlob from 'react-native-fetch-blob'
-import { initializeApp } from 'firebase';
-import config from '../../../config';
-
+import * as DB from '../../utils/database';
 
 /* RNFS */
 const pathPrefix = RNFS.DocumentDirectoryPath;
 const TEMPAUDIOFILE = 'test.mp4'
-window.RNFS = RNFS
-
-
-/* FETCH BLOB */
-const fs = RNFetchBlob.fs
-const Blob = RNFetchBlob.polyfill.Blob
-const dirs = RNFetchBlob.fs.dirs
-window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
-window.Blob = Blob
-window.fs = fs
-RNFetchBlob.config({ fileCache : true, appendExt : 'mp4' })
-
-
-/* FIREBASE */
-firebase.initializeApp({
-  apiKey: config.API_KEY,
-  authDomain: config.AUTH_DOMAIN,
-  databaseURL: config.DATABASE_URL,
-  storageBucket: config.STORAGE_BUCKET,
-});
-var db = firebase.database();
-const rootRef = db.ref();
-const markersRef = rootRef.child('markers');
-var storageRef = firebase.storage().ref();
-var soundFile = storageRef.child('bites/FILENAME.mp4');
-let FBFlag = true;
-
 
 export default class MakeBite extends Component {
   constructor(props) {
@@ -65,9 +35,6 @@ export default class MakeBite extends Component {
   }
 
   componentWillMount() {
-    // markersRef.on('child_added', (snapshot) => {
-      // this.props.addMarker(snapshot.val())
-    // });
     // this.listDir(pathPrefix);
     // this.listDir(RNFS.PicturesDirectoryPath);
   }
@@ -93,43 +60,6 @@ export default class MakeBite extends Component {
   //     }
   //   })
   // }
-
-  // Uploads mp4 to firebase storage
-  uploadAudio(filename) {
-    let rnfbURI = RNFetchBlob.wrap(pathPrefix + "/" + filename) // <255kb
-    let self = this;
-
-    // create Blob from file path
-    Blob
-      .build(rnfbURI, { type : 'audio/mp4;'})
-      .then((blob) => {
-        // upload image using Firebase SDK
-        firebase.storage()
-          .ref('rn-firebase-upload')
-          .child(filename)
-          .put(blob, { contentType : 'audio/mp4' })
-          .then((snapshot) => {
-            blob.close()
-            self.deleteAudio(filename)
-          })
-          .catch( function(error)  {
-            console.error(error)
-          })
-      })
-      .catch( function(error) {
-        console.error(error);
-      })
-  }
-
-  deleteAudio(filename) {
-    return RNFS.unlink(pathPrefix + "/" + filename + '.mp4')
-      .then(() => {
-        console.log("DELETED FILE COPY")
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }
 
   incrementRecTime() {
     this.setState({recTime: this.state.recTime+1});
@@ -184,42 +114,35 @@ export default class MakeBite extends Component {
     });
   }
 
-  markerClick(id) {
-    this.props.setMarker(id);
-  }
-
   addMarker() {
     var self = this;
     var markerID = self.state.text; //TODO: use good, unique ID's
     var s = new Sound(TEMPAUDIOFILE, pathPrefix, (errror) => {});
-    var userEmail = firebase.auth().currentUser.email
-    var fileName = userEmail + "-" + markerID + ".mp4"
+    var userEmail = firebase.auth().currentUser.email;
+    var fileName = userEmail + "-" + markerID + ".mp4";
+    const id = Math.random().toString(36).substring(7);
+
+    // TODO: add all fields
+    var newMarker = {
+      id: markerID,
+      f_id: id,
+      title: self.state.text,
+      duration: s._duration.toPrecision(3),
+      latitude: self.props.position.coords.latitude,
+      longitude: self.props.position.coords.longitude,
+      created: new Date().getTime(),
+      user: userEmail,
+      file: fileName
+    };
+
+    DB.pushMarker(newMarker);
+    // fileName = newRef.key + '.mp4';
 
     RNFS.copyFile(pathPrefix + "/" + TEMPAUDIOFILE,pathPrefix + "/" + fileName)
       .then(() => {
-        console.log("CREATED FILE COPY")
-        const id = Math.random().toString(36).substring(7);
-        const markerRef = markersRef.child(id);
-
-        // TODO: add all fields
-        var newMarker = {
-          id: markerID,
-          f_id: id,
-          title: self.state.text,
-          duration: s._duration.toPrecision(3),
-          // onPress: self.markerClick.bind(self,markerID),
-          latitude: self.props.position.coords.latitude,
-          longitude: self.props.position.coords.longitude,
-          // created: new Date().getTime()
-          user: userEmail,
-          file: fileName
-        };
-
-        markerRef.set(newMarker);
-
-        newMarker.onPress =  self.markerClick.bind(self,markerID); //TODO: better solution
+        console.log("CREATED FILE COPY");
         this.props.addMarker(newMarker);
-        self.uploadAudio(fileName);
+        DB.uploadAudio(fileName);
       });
   }
 
