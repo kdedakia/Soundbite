@@ -6,26 +6,15 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import AuthService from '../../utils/authservice';
-
-let auth = new AuthService('sOp1QvEWdBH9wI2X7SZr1EANlG8fY3es','dedakia.auth0.com');
 
 export default class Login extends React.Component {
-  login() {
-    auth.login(this.props.loginSuccess)
-  }
-
-  logout() {
-    auth.logout()
-  }
-
   render() {
     if (this.props.user == null) {
       return (
         <TouchableHighlight
             style={styles.signInButton}
             underlayColor='#949494'
-            onPress={this.login.bind(this)} >
+            onPress={this.props.login.bind(this)} >
             <Text>Log In</Text>
         </TouchableHighlight>
       );
@@ -38,7 +27,7 @@ export default class Login extends React.Component {
           <TouchableHighlight
               style={styles.signInButton}
               underlayColor='#949494'
-              onPress={this.logout.bind(this)} >
+              onPress={this.props.logout.bind(this)} >
               <Text>Log Out</Text>
           </TouchableHighlight>
         </View>

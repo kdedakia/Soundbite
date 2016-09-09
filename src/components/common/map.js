@@ -119,6 +119,9 @@ export default class MapBox extends Component {
         <TouchableHighlight style={[styles.circleBtn,styles.makeBtn]} onPress={this.toggleMake.bind(this)} >
           <Icon name="md-mic" style={styles.icon} />
         </TouchableHighlight>
+        <TouchableHighlight style={[styles.circleBtn,styles.logoutBtn]} onPress={this.props.logout.bind(this)} >
+          <Icon name="md-log-out" style={styles.icon} />
+        </TouchableHighlight>
         <TouchableHighlight style={[styles.circleBtn,styles.spoofBtn]} onPress={this.spoofPos.bind(this)} >
           <Icon name="md-compass" style={styles.icon} />
         </TouchableHighlight>
@@ -155,6 +158,10 @@ var styles = StyleSheet.create({
   makeBtn: {
     bottom: 30,
     right: 10,
+  },
+  logoutBtn: {
+    bottom: 40,
+    left: 100,
   },
   spoofBtn: {
     bottom: 40,

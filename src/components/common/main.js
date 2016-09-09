@@ -18,22 +18,23 @@ export default class Main extends Component {
       var user = JSON.parse(results[0][1])
       var idToken = results[1][1]
       var refreshToken = results[2][1]
-      this.props.loginSuccess(user,idToken,refreshToken)
 
-      DB.fetchFirebaseToken(idToken)
-      .then((fbToken) => {
-        DB.getMarkers();
-        this.props.fetchMarkers()
-      })
-      .catch((err) => alert(err))
+      // Todo: Make this better
+      if(user != null) {
+        this.props.loginSuccess(user,idToken,refreshToken)
+
+        DB.fetchFirebaseToken(idToken)
+        .then((fbToken) => {
+          DB.getMarkers();
+          this.props.fetchMarkers()
+        })
+        .catch((err) => alert(err))
+      }
     })
     .catch((err) => console.error(err));
   }
 
   render() {
-    // return (
-    //   <LoginContainer />
-    // )
     if (this.props.user == null) {
       return (
         <LoginContainer />

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import MapBox from '../components/common/map'
 
 import * as MarkerActions from '../actions/markers';
+import * as AuthActions from '../actions/auth';
 
 function mapStateToProps(state) {
   return {
@@ -14,7 +15,7 @@ function mapStateToProps(state) {
 
 // TODO: send only relevant actions? does this really matter..
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(MarkerActions, dispatch)
+  return bindActionCreators(Object.assign({},MarkerActions,AuthActions), dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapBox)
