@@ -39,28 +39,6 @@ export default class MakeBite extends Component {
     // this.listDir(RNFS.PicturesDirectoryPath);
   }
 
-  // componentDidMount() {
-  //   this.signIn();
-  // }
-  //
-  // signIn() {
-  //   firebase.auth()
-  //     .signInWithEmailAndPassword("kdedakia@gmail.com", "esz5qp")
-  //     .catch((err) => {
-  //       console.log('firebase sigin failed', err)
-  //     })
-  //
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     if (FBFlag) { //Hack to prevent this from being called twice
-  //       debugger;
-  //       if(user !== null) {;
-  //         console.log(user);
-  //       }
-  //       FBFlag = false;
-  //     }
-  //   })
-  // }
-
   incrementRecTime() {
     this.setState({recTime: this.state.recTime+1});
   }
@@ -118,7 +96,7 @@ export default class MakeBite extends Component {
     var self = this;
     var markerID = self.state.text; //TODO: use good, unique ID's
     var s = new Sound(TEMPAUDIOFILE, pathPrefix, (errror) => {});
-    var userEmail = firebase.auth().currentUser.email;
+    var userEmail = this.props.user.name;
     var fileName = userEmail + "-" + markerID + ".mp4";
     const id = Math.random().toString(36).substring(7);
 

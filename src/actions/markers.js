@@ -12,6 +12,7 @@ export const RECEIVE_MARKERS = 'RECEIVE_MARKERS'
 export const REQUEST_BITE = 'REQUEST_BITE'
 export const RECEIVE_BITE = 'RECEIVE_BITE'
 
+
 export function addMarker(data) {
   return { type: ADD_MARKER, data }
 }
@@ -37,19 +38,18 @@ function requestMarkers(loc) {
 }
 
 function receiveMarkers(loc,json) {
-    return {
-      type: RECEIVE_MARKERS,
-      loc,
-      json,
-      receivedAt: Date.now()
-    }
+  return {
+    type: RECEIVE_MARKERS,
+    loc,
+    json,
+    receivedAt: Date.now()
+  }
 }
 
 export function fetchMarkers(loc) {
   return dispatch => {
     dispatch(requestMarkers(loc))
-    return fetch(`https://dedakia2-2f9d5.firebaseio.com/markers.json`)
-      .then(response => response.json())
+    return DB.getMarkers()
       .then(json => dispatch(receiveMarkers(loc,json)))
   }
 }
@@ -71,8 +71,6 @@ export function fetchBite(file) {
       })
   }
 }
-
-
 
 // TODO: use these functions
 function shouldFetchMarkers(state, loc) {

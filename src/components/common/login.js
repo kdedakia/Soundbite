@@ -1,35 +1,49 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   StyleSheet,
   Text,
   TouchableHighlight,
+  View,
 } from 'react-native';
-import Auth0Lock from 'react-native-lock';
+import AuthService from '../../utils/authservice';
 
-var lock = new Auth0Lock({clientId: 'sOp1QvEWdBH9wI2X7SZr1EANlG8fY3es', domain: 'dedakia.auth0.com'});
+let auth = new AuthService('sOp1QvEWdBH9wI2X7SZr1EANlG8fY3es','dedakia.auth0.com');
 
 export default class Login extends React.Component {
-  _onLogin() {
-    lock.show({
-      closable: true,
-    }, (err, profile, token) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log("Logged In");
-    });
+  login() {
+    auth.login(this.props.loginSuccess)
+  }
+
+  logout() {
+    auth.logout()
   }
 
   render() {
-    return (
-      <TouchableHighlight
-          style={styles.signInButton}
-          underlayColor='#949494'
-          onPress={this._onLogin} >
-          <Text>Log In</Text>
-      </TouchableHighlight>
-    );
+    if (this.props.user == null) {
+      return (
+        <TouchableHighlight
+            style={styles.signInButton}
+            underlayColor='#949494'
+            onPress={this.login.bind(this)} >
+            <Text>Log In</Text>
+        </TouchableHighlight>
+      );
+    } else {
+      return (
+        <View>
+          <Text>LOGGED IN as {JSON.stringify(this.props.user.name)}</Text>
+          <Text>ID Token: {this.props.idToken}</Text>
+          <Text>Refresh Token: {this.props.refreshToken}</Text>
+          <TouchableHighlight
+              style={styles.signInButton}
+              underlayColor='#949494'
+              onPress={this.logout.bind(this)} >
+              <Text>Log Out</Text>
+          </TouchableHighlight>
+        </View>
+      )
+    }
   }
 }
 

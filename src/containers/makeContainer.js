@@ -7,7 +7,9 @@ import * as MarkerActions from '../actions/markers';
 function mapStateToProps(state) {
   return {
     overlay: state.markers.overlay,
-    position: state.markers.position
+    position: state.markers.position,
+    user: state.auth.user,
+    idToken: state.auth.idToken,
   }
 }
 

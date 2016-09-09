@@ -80,3 +80,53 @@ export function pushMarker(marker) {
   let newRef = markersRef.push(marker);
   return newRef;
 }
+
+export function getMarkers() {
+  return new Promise((resolve,reject) => {
+    markersRef.once('value')
+    .then((snapshot) => {
+      resolve(snapshot.val());
+    })
+    .catch((err) => reject(err))
+  });
+}
+
+export function signIn(token) {
+  firebase.auth().signInWithCustomToken(token)
+  .then((user) => {
+    console.log('firebase user',user)
+  })
+  .catch((err) => console.error(err))
+}
+
+export function fetchFirebaseToken(idToken) {
+  return new Promise((resolve, reject) => {
+
+    fetch('https://dedakia.auth0.com/delegation', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify({
+        client_id: 'sOp1QvEWdBH9wI2X7SZr1EANlG8fY3es',
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        id_token: idToken,
+        target: 'sOp1QvEWdBH9wI2X7SZr1EANlG8fY3es',
+        scope: 'openid',
+        api_type: 'firebase',
+      })
+    })
+    .then((response) => {
+      let fbToken = JSON.parse(response._bodyText).id_token;
+      if(fbToken == null) {
+        reject(JSON.parse(response._bodyText).error_description)
+      }
+
+      signIn(fbToken)
+      resolve(fbToken)
+    })
+    .catch((err) => reject(err));
+  });
+}

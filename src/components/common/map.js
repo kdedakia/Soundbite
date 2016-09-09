@@ -73,8 +73,6 @@ export default class MapBox extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchMarkers();
-
     var self = this;
     navigator.geolocation.getCurrentPosition(
       (position) => {
