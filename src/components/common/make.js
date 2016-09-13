@@ -95,33 +95,38 @@ export default class MakeBite extends Component {
   addMarker() {
     var self = this;
     var markerID = self.state.text; //TODO: use good, unique ID's
-    var s = new Sound(TEMPAUDIOFILE, pathPrefix, (errror) => {});
-    var userEmail = this.props.user.name;
-    var fileName = userEmail + "-" + markerID + ".mp4";
-    const id = Math.random().toString(36).substring(7);
+    var s = new Sound(TEMPAUDIOFILE, pathPrefix, (error) => {
+      if (error) {
+        console.error(error)
+      } else {
+        var userEmail = this.props.user.name;
+        var fileName = userEmail + "-" + markerID + ".mp4";
+        const id = Math.random().toString(36).substring(7);
 
-    // TODO: add all fields
-    var newMarker = {
-      id: markerID,
-      f_id: id,
-      title: self.state.text,
-      duration: s._duration.toPrecision(3),
-      latitude: self.props.position.coords.latitude,
-      longitude: self.props.position.coords.longitude,
-      created: new Date().getTime(),
-      user: userEmail,
-      file: fileName
-    };
+        // TODO: add all fields
+        var newMarker = {
+          id: markerID,
+          f_id: id,
+          title: self.state.text,
+          duration: s.getDuration().toPrecision(3),
+          latitude: self.props.position.coords.latitude,
+          longitude: self.props.position.coords.longitude,
+          created: new Date().getTime(),
+          user: userEmail,
+          file: fileName
+        };
 
-    DB.pushMarker(newMarker);
-    // fileName = newRef.key + '.mp4';
+        DB.pushMarker(newMarker);
+        // fileName = newRef.key + '.mp4';
 
-    RNFS.copyFile(pathPrefix + "/" + TEMPAUDIOFILE,pathPrefix + "/" + fileName)
-      .then(() => {
-        console.log("CREATED FILE COPY");
-        this.props.addMarker(newMarker);
-        DB.uploadAudio(fileName);
-      });
+        RNFS.copyFile(pathPrefix + "/" + TEMPAUDIOFILE,pathPrefix + "/" + fileName)
+          .then(() => {
+            console.log("CREATED FILE COPY");
+            this.props.addMarker(newMarker);
+            DB.uploadAudio(fileName);
+          });
+      }
+    });
   }
 
   // TODO: fix this for dynamic icons
