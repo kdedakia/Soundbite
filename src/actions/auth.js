@@ -2,6 +2,7 @@ export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 export const LOGIN_ERROR = 'LOGIN_ERROR'
 export const LOGOUT = 'LOGOUT'
+export const REFRESH_ID = 'REFRESH_ID'
 
 import {
   AsyncStorage,
@@ -45,4 +46,24 @@ export function logout() {
     }
   });
   return { type: LOGOUT }
+}
+
+export function refreshId(refreshToken) {
+  return dispatch => {
+    auth.auth
+    .authentication('sOp1QvEWdBH9wI2X7SZr1EANlG8fY3es')
+      .refreshToken(refreshToken)
+      .then(response => {
+        dispatch(setIdToken(response.id_token))
+        return
+      })
+      .catch(error => {
+        console.log(error)
+      });
+  }
+}
+
+function setIdToken(idToken) {
+  AsyncStorage.setItem('idToken',idToken);
+  return { type: REFRESH_ID, idToken }
 }

@@ -12,6 +12,7 @@
     "react": "15.2.1",
     "react-native": "^0.30.0",
     "react-native-action-button": "^1.1.11",
+    "react-native-auth0": "^1.0.0-beta.1",
     "react-native-fetch-blob": "^0.9.4-beta.1",
     "react-native-fs": "^2.0.1-rc.2",
     "react-native-lock": "^0.3.0",

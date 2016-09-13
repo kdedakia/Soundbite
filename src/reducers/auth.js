@@ -4,6 +4,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT,
+  REFRESH_ID,
 } from '../actions/auth';
 
 const initialState = {
@@ -24,6 +25,8 @@ export default function reducer(state=initialState, action) {
       return state
     case LOGOUT:
       return Object.assign({}, state, {user: null, idToken: null, refreshToken: null, isAuthenticated: false })
+    case REFRESH_ID:
+      return Object.assign({}, state, {idToken: action.idToken})
     default:
       return state;
   }

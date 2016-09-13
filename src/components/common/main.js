@@ -22,6 +22,7 @@ export default class Main extends Component {
       // Todo: Make this better
       if(user != null) {
         this.props.loginSuccess(user,idToken,refreshToken)
+        // this.props.refreshId(refreshToken)
 
         DB.fetchFirebaseToken(idToken)
         .then((fbToken) => {
