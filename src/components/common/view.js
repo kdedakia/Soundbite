@@ -35,9 +35,7 @@ export default class ViewBite extends Component {
     }
 
     if (this.state.isPlaying) {
-      this.setState({sound:null,isPlaying:false});
-      this.state.sound.stop();
-      this.state.sound.release();
+      this.stopSound();
       return;
     }
 
@@ -59,6 +57,17 @@ export default class ViewBite extends Component {
         });
       }
     });
+  }
+
+  stopSound() {
+    this.setState({sound:null,isPlaying:false});
+    this.state.sound.stop();
+    this.state.sound.release();
+  }
+
+  closeModal() {
+    this.state.isPlaying? this.stopSound() : null;
+    this.props.showView(false);
   }
 
   render() {
@@ -100,7 +109,7 @@ export default class ViewBite extends Component {
         <View style={[OverlayStyles.container, modalBackgroundStyle]}>
           <View style={[OverlayStyles.innerContainer, innerContainerTransparentStyle]}>
             <View style={OverlayStyles.innerHeader}>
-              <TouchableHighlight onPress={this.props.showView.bind(this,false)}>
+              <TouchableHighlight onPress={this.closeModal.bind(this)}>
                 <Icon name="md-close" style={OverlayStyles.closeBtn}/>
               </TouchableHighlight>
             </View>
@@ -108,7 +117,8 @@ export default class ViewBite extends Component {
             {loading}
 
             <TouchableHighlight onPress={this.playSound.bind(this,"current.mp4")} style={OverlayStyles.okBtn}>
-                <Icon name="md-play" style={OverlayStyles.actionButtonIcon} />
+              { this.state.isPlaying? <Icon name="md-square" style={OverlayStyles.actionButtonIcon} /> : <Icon name="md-play" style={OverlayStyles.actionButtonIcon} /> }
+
             </TouchableHighlight>
 
             { content }
