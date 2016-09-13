@@ -9,7 +9,8 @@ function mapStateToProps(state) {
   return {
     markers: state.markers.markersList,
     position: state.markers.position,
-    overlay: state.markers.overlay
+    overlay: state.markers.overlay,
+    user: state.auth.user
   }
 }
 

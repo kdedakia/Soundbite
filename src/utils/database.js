@@ -45,11 +45,11 @@ export function uploadAudio(filename) {
           deleteAudio(filename)
         })
         .catch( function(error)  {
-          console.error(error)
+          console.error("DB: Firebase Upload", error)
         })
     })
     .catch( function(error) {
-      console.error(error);
+      console.error("DB: Blob Building",error);
     })
 }
 
@@ -96,7 +96,7 @@ export function signIn(token) {
   .then((user) => {
     console.log('firebase user',user)
   })
-  .catch((err) => console.error(err))
+  .catch((err) => console.error("DB: Sign In", err))
 }
 
 export function fetchFirebaseToken(idToken) {

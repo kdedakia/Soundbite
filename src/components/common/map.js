@@ -112,7 +112,7 @@ export default class MapBox extends Component {
               {this.currPos()}
 
               {this.props.markers.map (marker =>
-                <Marker key={marker.id} {...marker} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} />
+                <Marker key={marker.id} {...marker} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} currUser={this.props.user.email}/>
               )}
           </MapView>
         </View>

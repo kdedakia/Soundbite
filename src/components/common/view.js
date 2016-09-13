@@ -80,6 +80,7 @@ export default class ViewBite extends Component {
           <Text style={OverlayStyles.btnText}>Title: { this.props.currMarker.title }</Text>
           <Text style={OverlayStyles.btnText}>Duration: { this.props.currMarker.duration }</Text>
           <Text style={OverlayStyles.btnText}>File: { this.props.currMarker.file }</Text>
+          <Text style={OverlayStyles.btnText}>User: { this.props.currMarker.user }</Text>
         </View>
       )
     }

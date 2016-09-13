@@ -8,11 +8,12 @@ export default class Marker extends Component {
     this.props.setMarker(id);
   }
 
-  render() {    
+  render() {
     return (
       <MapView.Marker
         coordinate={{latitude: this.props.latitude,longitude: this.props.longitude}}
-        title={this.props.title}
+        title={this.props.title + " | " + this.props.user}
+        image={this.props.user == this.props.currUser ? require('../../../map-pin.png') : null}
         description={"Duration: " + this.props.duration + " seconds"}
         onCalloutPress={this.markerClick.bind(this,this.props.id)}
         key={this.props.id}
