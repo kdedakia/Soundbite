@@ -40,7 +40,7 @@ export default class MakeBite extends Component {
   }
 
   incrementRecTime() {
-    this.setState({recTime: this.state.recTime+1});
+    this.setState({recTime: this.state.recTime+0.1});
   }
 
   recordSound(file) {
@@ -49,7 +49,7 @@ export default class MakeBite extends Component {
     if (this.state.isRecording === false) {
       this.setState({recTime:0});
       this.incrementRecTime();
-      this.setState({timer:setInterval(this.incrementRecTime.bind(self) ,1000)});
+      this.setState({timer:setInterval(this.incrementRecTime.bind(self),100)});
 
       Record.startRecord(pathPrefix + '/' + file, (err) => {
         console.log(err)
@@ -195,7 +195,7 @@ export default class MakeBite extends Component {
               onChangeText={(text) => this.setState({text})} />
             {this.getButtons.bind(this)()}
             <View style={{width:300}}>
-              <Text style={styles.status}>Duration: {this.state.recTime}</Text>
+              <Text style={styles.status}>Duration: {this.state.recTime.toPrecision(3)}</Text>
               <Text style={styles.status}>Recording: {this.state.isRecording.toString()}</Text>
             </View>
           </View>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as Progress from 'react-native-progress';
 import {
   Modal,
   StyleSheet,
@@ -23,7 +24,14 @@ export default class ViewBite extends Component {
       isPlaying: false,
       animationType: 'fade',
       transparent: true,
+      timer: null,
+      playTime: 0.0,
     }
+  }
+
+  incrementPlayTime() {
+    this.setState({playTime: this.state.playTime + 0.1});
+    console.log(this.state.playTime);
   }
 
   playSound(file) {
@@ -46,11 +54,14 @@ export default class ViewBite extends Component {
         console.log('duration in seconds: ' + bite.getDuration() +
             'number of channels: ' + bite.getNumberOfChannels());
 
-        self.setState({sound:bite,isPlaying: true});
+        self.setState({sound:bite,isPlaying: true,playTime: 0, timer:setInterval(self.incrementPlayTime.bind(self) ,100)});
+        // self.incrementPlayTime();
+
         bite.play((success) => {
           if (success) {
             console.log('successfully finished playing');
-            self.setState({sound:null, isPlaying: false});
+            clearInterval(self.state.timer);
+            self.setState({sound:null, isPlaying: false, playTime: 0});
           } else {
             console.log('playback failed due to audio decoding errors');
           }
@@ -63,6 +74,7 @@ export default class ViewBite extends Component {
     this.setState({sound:null,isPlaying:false});
     this.state.sound.stop();
     this.state.sound.release();
+    clearInterval(this.state.timer);
   }
 
   closeModal() {
@@ -99,6 +111,11 @@ export default class ViewBite extends Component {
       loading = <Text>Loading Bite...</Text>
     }
 
+    let progressBar;
+    if(this.props.currMarker && this.state.isPlaying) {
+      progressBar = <Progress.Bar progress={(this.state.playTime/this.props.currMarker.duration)} width={200} />
+    }
+
     return (
       <Modal
         animationType={this.state.animationType}
@@ -118,8 +135,8 @@ export default class ViewBite extends Component {
 
             <TouchableHighlight onPress={this.playSound.bind(this,"current.mp4")} style={OverlayStyles.okBtn}>
               { this.state.isPlaying? <Icon name="md-square" style={OverlayStyles.actionButtonIcon} /> : <Icon name="md-play" style={OverlayStyles.actionButtonIcon} /> }
-
             </TouchableHighlight>
+            {progressBar}
 
             { content }
 

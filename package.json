@@ -17,6 +17,7 @@
     "react-native-fs": "^2.0.1-rc.2",
     "react-native-lock": "^0.3.0",
     "react-native-maps": "^0.7.1",
+    "react-native-progress": "^3.1.0",
     "react-native-record-sound": "^1.2.6",
     "react-native-scrollable-tab-view": "^0.5.3",
     "react-native-sound": "^0.8.3",
