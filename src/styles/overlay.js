@@ -24,6 +24,10 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  playBtn: {
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
   actionButtonIcon: {
     fontSize: 50,
     height: 50,

@@ -113,7 +113,7 @@ export default class ViewBite extends Component {
 
     let progressBar;
     if(this.props.currMarker && this.state.isPlaying) {
-      progressBar = <Progress.Bar progress={(this.state.playTime/this.props.currMarker.duration)} width={200} />
+      progressBar = <Progress.Bar progress={(this.state.playTime/this.props.currMarker.duration)} width={200} style={styles.progressBar} />
     }
 
     return (
@@ -132,11 +132,12 @@ export default class ViewBite extends Component {
             </View>
 
             {loading}
-
-            <TouchableHighlight onPress={this.playSound.bind(this,"current.mp4")} style={OverlayStyles.okBtn}>
-              { this.state.isPlaying? <Icon name="md-square" style={OverlayStyles.actionButtonIcon} /> : <Icon name="md-play" style={OverlayStyles.actionButtonIcon} /> }
-            </TouchableHighlight>
-            {progressBar}
+            <View style={styles.playContainer}>
+              <TouchableHighlight onPress={this.playSound.bind(this,"current.mp4")} style={[OverlayStyles.okBtn,OverlayStyles.playBtn]}>
+                { this.state.isPlaying? <Icon name="md-square" style={OverlayStyles.actionButtonIcon} /> : <Icon name="md-play" style={OverlayStyles.actionButtonIcon} /> }
+              </TouchableHighlight>
+              {progressBar}
+            </View>
 
             { content }
 
@@ -147,3 +148,12 @@ export default class ViewBite extends Component {
     );
   }
 }
+
+var styles = StyleSheet.create({
+  playContainer: {
+    alignSelf: 'center'
+  },
+  progressBar: {
+    marginBottom: 20,
+  }
+});
