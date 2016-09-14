@@ -102,6 +102,13 @@ export default class MapBox extends Component {
   }
 
   render() {
+    let pos, lat, lng;
+    if (this.state.initialPosition != "unknown") {
+      pos = JSON.parse(this.state.initialPosition);
+      lat = pos.coords.latitude;
+      lng = pos.coords.longitude;
+    }
+
     return(
       <View>
         <View style={styles.mapBox}>
@@ -112,7 +119,7 @@ export default class MapBox extends Component {
               {this.currPos()}
 
               {this.props.markers.map (marker =>
-                <Marker key={marker.id} {...marker} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} currUser={this.props.user.email}/>
+                <Marker key={marker.id} {...marker} currLat={lat} currLong={lng} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} currUser={this.props.user.email}/>
               )}
           </MapView>
         </View>

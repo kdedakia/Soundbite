@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   AsyncStorage,
   BackAndroid,
+  ToastAndroid,
   View,
 } from 'react-native';
 
@@ -23,15 +24,21 @@ export default class Main extends Component {
 
     DB.markersRef.on('child_added', (snapshot) => {
       this.props.fetchMarkers();
+      this.showToast();
     });
 
     DB.markersRef.on('child_removed', (snapshot) => {
       this.props.fetchMarkers();
     });
+
   }
 
   componentWillUnmount() {
     BackAndroid.removeEventListener('hardwareBackPress', this.backBtn);
+  }
+
+  showToast() {
+    ToastAndroid.show('New SoundBites are nearby!',ToastAndroid.LONG)
   }
 
   backBtn() {
