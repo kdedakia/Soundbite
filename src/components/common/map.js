@@ -80,7 +80,7 @@ export default class MapBox extends Component {
         this.setState({initialPosition});
         self.changeLocation(position);
       },
-      (error) => alert(error),
+      (error) => alert("Location Error: " + error),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
     this.watchID = navigator.geolocation.watchPosition((position) => {
@@ -122,6 +122,9 @@ export default class MapBox extends Component {
         <TouchableHighlight style={[styles.circleBtn,styles.logoutBtn]} onPress={this.props.logout.bind(this)} >
           <Icon name="md-log-out" style={styles.icon} />
         </TouchableHighlight>
+        <TouchableHighlight style={[styles.circleBtn,styles.refreshBtn]} onPress={this.props.refreshId.bind(this,this.props.refreshToken)} >
+          <Icon name="md-refresh" style={styles.icon} />
+        </TouchableHighlight>
         <TouchableHighlight style={[styles.circleBtn,styles.spoofBtn]} onPress={this.spoofPos.bind(this)} >
           <Icon name="md-compass" style={styles.icon} />
         </TouchableHighlight>
@@ -154,17 +157,18 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    bottom: 40,
   },
   makeBtn: {
-    bottom: 30,
     right: 10,
   },
+  refreshBtn: {
+    right: 100,
+  },
   logoutBtn: {
-    bottom: 40,
     left: 100,
   },
   spoofBtn: {
-    bottom: 40,
     left: 10,
   },
   icon: {

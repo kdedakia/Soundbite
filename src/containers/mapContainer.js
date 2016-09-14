@@ -10,7 +10,8 @@ function mapStateToProps(state) {
     markers: state.markers.markersList,
     position: state.markers.position,
     overlay: state.markers.overlay,
-    user: state.auth.user
+    user: state.auth.user,
+    refreshToken: state.auth.refreshToken,
   }
 }
 
