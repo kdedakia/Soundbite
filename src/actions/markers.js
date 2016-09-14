@@ -1,4 +1,3 @@
-// import fetch from 'isomorphic-fetch'
 import * as DB from '../utils/database'
 
 export const ADD_MARKER = 'ADD_MARKER'

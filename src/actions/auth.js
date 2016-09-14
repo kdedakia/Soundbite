@@ -38,7 +38,7 @@ export function getUser() {
         dispatch(refreshId(refreshToken)) //Should always occur after loginSuccess
       }
     })
-    .catch((err) => console.error("Get User Error: " + err))
+    .catch((err) => console.log("Get User Error: " + err))
   }
 }
 
@@ -52,6 +52,8 @@ export function login() {
       } else {
         AsyncStorage.multiSet([['idToken',token.idToken],['refreshToken',token.refreshToken],['user',JSON.stringify(profile)]])
         dispatch(loginSuccess(profile,token.idToken,token.refreshToken))
+        dispatch(getFirebase(token.idToken))
+        dispatch(fetchMarkers())
       }
     })
   }
@@ -71,7 +73,7 @@ function loginError(err) {
 }
 
 export function logout() {
-  AsyncStorage.multiRemove(['idToken','refreshToken','user'], (err) => {
+  AsyncStorage.multiRemove(['idToken','refreshToken','user','firebaseToken'], (err) => {
     if (err) {
       console.error("Logout Error:" + err);
     }
@@ -114,6 +116,7 @@ export function getFirebase(idToken) {
 }
 
 export function refreshFirebase(idToken) {
+  console.log("FETCHING FIREBASE TOKEN")
   return dispatch => {
     fetch('https://dedakia.auth0.com/delegation', {
       method: 'POST',
@@ -146,7 +149,6 @@ export function refreshFirebase(idToken) {
     })
     .catch((err) => dispatch(firebaseError(err)));
   }
-
 }
 
 function requestFirebase() {
