@@ -180,7 +180,7 @@ export default class MakeBite extends Component {
         animationType={this.state.animationType}
         transparent={true}
         visible={this.props.overlay == "MAKE"}
-        onRequestClose={() => {this.props.showMake.bind(this,false)}} >
+        onRequestClose={() => {this.props.showMake(false)}} >
 
         <View style={[OverlayStyles.container, modalBackgroundStyle]}>
           <View style={[OverlayStyles.innerContainer, innerContainerTransparentStyle]}>

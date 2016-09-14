@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   AsyncStorage,
+  BackAndroid,
   View,
 } from 'react-native';
 
@@ -13,6 +14,15 @@ import ViewContainer from '../../containers/viewContainer';
 export default class Main extends Component {
   componentWillMount() {
     this.props.getUser();
+    BackAndroid.addEventListener('hardwareBackPress',this.backBtn.bind(this))
+  }
+
+  componentWillUnmount() {
+    BackAndroid.removeEventListener('hardwareBackPress', this.backBtn);
+  }
+
+  backBtn() {
+    return true;
   }
 
   render() {
