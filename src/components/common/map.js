@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   StyleSheet,
   Text,
   TextInput,
@@ -74,10 +75,23 @@ export default class MapBox extends Component {
 
   componentDidMount() {
     var self = this;
+
+    AsyncStorage.getItem('position')
+    .then((pos) => {
+      if(pos) {
+        self.changeLocation(JSON.parse(pos))
+        self.setState({initialPosition:pos});
+      }
+    })
+    .catch((err) => {
+      console.error("Position Async Error: " + err)
+    })
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         var initialPosition = JSON.stringify(position);
         this.setState({initialPosition});
+        AsyncStorage.setItem('position',initialPosition)
         self.changeLocation(position);
       },
       (error) => alert("Location Error: " + error),
