@@ -13,7 +13,7 @@ firebase.initializeApp({
 
 var db = firebase.database();
 const rootRef = db.ref();
-const markersRef = rootRef.child('markers');
+export const markersRef = rootRef.child('markers');
 var storageRef = firebase.storage().ref();
 var soundFile = storageRef.child('bites/FILENAME.mp4');
 const pathPrefix = RNFS.DocumentDirectoryPath;
