@@ -50,6 +50,7 @@ export function fetchMarkers(loc) {
     dispatch(requestMarkers(loc))
     return DB.getMarkers()
       .then(json => dispatch(receiveMarkers(loc,json)))
+      .catch((err) => console.log("Fetching Markers Error: " + err))
   }
 }
 

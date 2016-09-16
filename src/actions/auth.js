@@ -31,11 +31,12 @@ export function getUser() {
 
       if(user != null) {
         dispatch(loginSuccess(user,idToken,refreshToken))
-        dispatch(getFirebase(idToken))
-        dispatch(fetchMarkers())
       }
+
       if (isTokenExpired(idToken)) {
         dispatch(refreshId(refreshToken)) //Should always occur after loginSuccess
+      } else {
+        dispatch(getFirebase(idToken))
       }
     })
     .catch((err) => console.log("Get User Error: " + err))
@@ -53,7 +54,6 @@ export function login() {
         AsyncStorage.multiSet([['idToken',token.idToken],['refreshToken',token.refreshToken],['user',JSON.stringify(profile)]])
         dispatch(loginSuccess(profile,token.idToken,token.refreshToken))
         dispatch(getFirebase(token.idToken))
-        dispatch(fetchMarkers())
       }
     })
   }
@@ -78,6 +78,8 @@ export function logout() {
       console.error("Logout Error:" + err);
     }
   });
+  DB.signOut();
+
   return { type: LOGOUT }
 }
 
@@ -88,6 +90,7 @@ export function refreshId(refreshToken) {
       .refreshToken(refreshToken)
       .then(response => {
         dispatch(setIdToken(response.id_token))
+        dispatch(getFirebase(response.id_token))
         return
       })
       .catch(error => {
@@ -109,15 +112,18 @@ export function getFirebase(idToken) {
       if(fbToken == null || isTokenExpired(fbToken)) {
         dispatch(refreshFirebase(idToken));
       } else {
-        DB.signIn(fbToken).then(() => dispatch(firebaseSuccess(fbToken)))
+        DB.signIn(fbToken).then(() => {
+          dispatch(firebaseSuccess(fbToken))
+          dispatch(fetchMarkers())
+        })
       }
     });
   }
 }
 
 export function refreshFirebase(idToken) {
-  console.log("FETCHING FIREBASE TOKEN")
   return dispatch => {
+    dispatch(requestFirebase())
     fetch('https://dedakia.auth0.com/delegation', {
       method: 'POST',
       headers: {

@@ -104,3 +104,11 @@ export function signIn(token) {
     })
   })
 }
+
+export function signOut() {
+  firebase.auth().signOut()
+  .then(() => {
+    console.log("Firebase Signed Out");
+  })
+  .catch((err) => console.log("Firebase Signout Error: " + err))
+}
