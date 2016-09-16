@@ -1,6 +1,7 @@
 import * as DB from '../utils/database'
 
 export const ADD_MARKER = 'ADD_MARKER'
+export const REMOVE_MARKER = 'REMOVE_MARKER'
 export const SET_MARKER = 'SET_MARKER'
 export const SET_POSITION = 'SET_POSITION'
 export const SHOW_MAKE = 'SHOW_MAKE'
@@ -14,6 +15,10 @@ export const RECEIVE_BITE = 'RECEIVE_BITE'
 
 export function addMarker(data) {
   return { type: ADD_MARKER, data }
+}
+
+export function removeMarker(f_id) {
+  return { type: REMOVE_MARKER, f_id }
 }
 
 export function setMarker(id) {

@@ -1,5 +1,6 @@
 import {
   ADD_MARKER,
+  REMOVE_MARKER,
   SET_MARKER,
   SET_POSITION,
   SHOW_MAKE,
@@ -29,6 +30,15 @@ export default function reducer(state=initialState, action) {
       var newMarkersList = state.markersList;
       newMarkersList.push(action.data);
       return Object.assign({}, state, {markersList: newMarkersList, overlay: null})
+    case REMOVE_MARKER:
+      var newMarkersList = [];
+      for (var idx in newMarkersList) {
+        if (newMarkersList[key].f_id != action.f_id) {
+          newMarkersList.push(newMarkersList[idx])
+          break;
+        }
+      }
+      return Object.assign({}, state, {markersList: newMarkersList })
     case SET_POSITION:
       return Object.assign({}, state, {position: action.pos})
     case SHOW_MAKE:

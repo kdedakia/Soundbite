@@ -58,7 +58,7 @@ export function deleteAudio(filename) {
       console.log("DELETED FILE COPY")
     })
     .catch((err) => {
-      console.log(err.message);
+      console.log("Delete Audio Error: " + err.message);
     });
 }
 
