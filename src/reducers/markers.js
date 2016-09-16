@@ -32,11 +32,8 @@ export default function reducer(state=initialState, action) {
       return Object.assign({}, state, {markersList: newMarkersList, overlay: null})
     case REMOVE_MARKER:
       var newMarkersList = [];
-      for (var idx in newMarkersList) {
-        if (newMarkersList[key].f_id != action.f_id) {
-          newMarkersList.push(newMarkersList[idx])
-          break;
-        }
+      for (var idx in state.markersList) {
+        state.markersList[idx].f_id != action.f_id ? newMarkersList.push(state.markersList[idx]) : null
       }
       return Object.assign({}, state, {markersList: newMarkersList })
     case SET_POSITION:

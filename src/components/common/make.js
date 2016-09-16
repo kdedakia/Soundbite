@@ -39,28 +39,36 @@ export default class MakeBite extends Component {
     // this.listDir(RNFS.PicturesDirectoryPath);
   }
 
-  incrementRecTime() {
-    this.setState({recTime: this.state.recTime+0.1});
+  incrementRecTime(start) {
+    if (start) {
+      this.setState({recTime: 0.1});
+    } else {
+      this.setState({recTime: this.state.recTime+0.1});
+    }
   }
 
   recordSound(file) {
-    var self = this;
-
     if (this.state.isRecording === false) {
-      this.setState({recTime:0});
-      this.incrementRecTime();
-      this.setState({timer:setInterval(this.incrementRecTime.bind(self),100)});
+      this.incrementRecTime(true);
+      this.setState({timer:setInterval(this.incrementRecTime.bind(this),100)});
 
       Record.startRecord(pathPrefix + '/' + file, (err) => {
-        console.log(err)
+        console.log("Start Recording Error: " + err)
       });
     }
     else {
-      Record.stopRecord();
-      clearInterval(this.state.timer);
+      this.stopRecording();
     }
 
     this.setState({isRecording: !this.state.isRecording})
+  }
+
+  stopRecording() {
+    return new Promise((resolve,reject) => {
+      Record.stopRecord();
+      clearInterval(this.state.timer);
+      resolve();
+    })
   }
 
   playSound(file) {
@@ -93,6 +101,14 @@ export default class MakeBite extends Component {
   }
 
   addMarker() {
+    if (this.state.isRecording) {
+      this.stopRecording().then(() => this.uploadMarker());
+    } else {
+      this.uploadMarker();
+    }
+  }
+
+  uploadMarker() {
     var self = this;
     var markerID = self.state.text; //TODO: use good, unique ID's
     var s = new Sound(TEMPAUDIOFILE, pathPrefix, (error) => {
@@ -113,7 +129,9 @@ export default class MakeBite extends Component {
           longitude: self.props.position.coords.longitude,
           created: new Date().getTime(),
           user: userEmail,
-          file: fileName
+          file: fileName,
+          upvotes: [],
+          downvotes: [],
         };
 
         DB.pushMarker(newMarker);
@@ -122,7 +140,6 @@ export default class MakeBite extends Component {
         RNFS.copyFile(pathPrefix + "/" + TEMPAUDIOFILE,pathPrefix + "/" + fileName)
           .then(() => {
             console.log("CREATED FILE COPY");
-            this.props.addMarker(newMarker);
             DB.uploadAudio(fileName);
           });
       }
