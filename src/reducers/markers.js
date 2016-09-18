@@ -38,22 +38,14 @@ export default function reducer(state=initialState, action) {
       }
       return Object.assign({}, state, {markersList: newMarkersList })
     case UPDATE_MARKER:
+      // Avoid copying with reference
       let newMarkersList = JSON.parse(JSON.stringify(state.markersList));
       let newCurrMarker = JSON.parse(JSON.stringify(state.currMarker));
 
       for(var idx in newMarkersList) {
         if (newMarkersList[idx].f_id == action.data.f_id) {
-          if (typeof action.data.upvotes != "undefined") {
-            newMarkersList[idx].upvotes = Object.keys(action.data.upvotes).map((v) => {return action.data.upvotes[v]})
-          } else {
-            newMarkersList[idx].upvotes = [];
-          }
-
-          if (typeof action.data.downvotes != "undefined") {
-            newMarkersList[idx].downvotes = Object.keys(action.data.downvotes).map((v) => {return action.data.downvotes[v]})
-          } else {
-            newMarkersList[idx].downvotes = [];
-          }
+          typeof action.data.upvotes != "undefined"? newMarkersList[idx].upvotes = Object.keys(action.data.upvotes).map((v) => {return action.data.upvotes[v]}) : newMarkersList[idx].upvotes = [];
+          typeof action.data.downvotes != "undefined"? newMarkersList[idx].downvotes = Object.keys(action.data.downvotes).map((v) => {return action.data.downvotes[v]}) : newMarkersList[idx].downvotes = [];
 
           if (action.data.f_id == state.currMarker.f_id) {
             newCurrMarker.upvotes = newMarkersList[idx].upvotes;
@@ -66,17 +58,9 @@ export default function reducer(state=initialState, action) {
     case SET_POSITION:
       return Object.assign({}, state, {position: action.pos})
     case SHOW_MAKE:
-      if (action.show) {
-        return Object.assign({}, state, {overlay: "MAKE"})
-      } else {
-        return Object.assign({}, state, {overlay: null})
-      }
+      action.show? return Object.assign({}, state, {overlay: "MAKE"}) : return Object.assign({}, state, {overlay: null});
     case SHOW_VIEW:
-      if (action.show) {
-        return Object.assign({}, state, {overlay: "VIEW"})
-      } else {
-        return Object.assign({}, state, {overlay: null})
-      }
+      action.show? return Object.assign({}, state, {overlay: "VIEW"}) : return Object.assign({}, state, {overlay: null});
     case SET_MARKER:
       for (var i = 0; i < state.markersList.length; i++) {
         if (state.markersList[i].id == action.id) {
@@ -91,18 +75,10 @@ export default function reducer(state=initialState, action) {
       var markers = [];
       for (key in action.json) {
         let m = action.json[key];
-        if (typeof m.upvotes != "undefined") {
-          let upvotes = Object.keys(m.upvotes).map((v) => {return m.upvotes[v]})
-          m["upvotes"] = upvotes;
-        } else {
-          m["upvotes"] = [];
-        }
-        if (typeof m.downvotes != "undefined") {
-          let downvotes = Object.keys(m.downvotes).map((v) => {return m.downvotes[v]})
-          m["downvotes"] = downvotes;
-        } else {
-          m["downvotes"] = [];
-        }
+
+        typeof m.upvotes != "undefined"? m["upvotes"] = Object.keys(m.upvotes).map((v) => {return m.upvotes[v]}) : m["upvotes"] = [];
+        typeof m.downvotes != "undefined"? m["downvotes"] = Object.keys(m.downvotes).map((v) => {return m.downvotes[v]}) : m["downvotes"] = [];
+
         m["firebaseId"] = key;
         markers.push(m);
       }

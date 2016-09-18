@@ -18,7 +18,6 @@ export default class Main extends Component {
     this.props.getUser();
     BackAndroid.addEventListener('hardwareBackPress',this.backBtn.bind(this))
 
-    // TODO: add child_changed event?
     DB.markersRef.on('child_added', (snapshot) => {
       this.props.addMarker(snapshot.val());
       this.showToast();
