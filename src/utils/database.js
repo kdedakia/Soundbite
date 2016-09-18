@@ -2,6 +2,7 @@ import RNFS from 'react-native-fs';
 import { initializeApp } from 'firebase';
 import config from '../../config';
 import RNFetchBlob from 'react-native-fetch-blob'
+import { addMarker, removeMarker, updateMarker } from '../actions/markers'
 
 /* FIREBASE */
 firebase.initializeApp({
@@ -96,6 +97,7 @@ export function signIn(token) {
     firebase.auth().signInWithCustomToken(token)
     .then((user) => {
       console.log('firebase user',user)
+      addListeners();
       resolve()
     })
     .catch((err) => {
@@ -111,4 +113,18 @@ export function signOut() {
     console.log("Firebase Signed Out");
   })
   .catch((err) => console.log("Firebase Signout Error: " + err))
+}
+
+function addListeners() {
+  markersRef.on('child_added', (snapshot) => {
+    dispatch(addMarker(snapshot.val()))
+  });
+
+  markersRef.on('child_removed', (snapshot) => {
+    dispatch(removeMarker(snapshot.val().f_id))
+  });
+
+  markersRef.on('child_changed', (snapshot) => {
+    dispatch(updateMarker(snapshot.val()))
+  });
 }

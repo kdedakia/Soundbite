@@ -5,6 +5,7 @@ import Main from './src/containers/mainContainer'
 import configureStore from './src/store/configureStore'
 
 const store = configureStore()
+window.dispatch = store.dispatch;
 
 class RNTest extends Component {
   render() {

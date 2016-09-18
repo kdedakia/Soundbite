@@ -58,9 +58,9 @@ export default function reducer(state=initialState, action) {
     case SET_POSITION:
       return Object.assign({}, state, {position: action.pos})
     case SHOW_MAKE:
-      action.show? return Object.assign({}, state, {overlay: "MAKE"}) : return Object.assign({}, state, {overlay: null});
+      return action.show? Object.assign({}, state, {overlay: "MAKE"}) : Object.assign({}, state, {overlay: null});
     case SHOW_VIEW:
-      action.show? return Object.assign({}, state, {overlay: "VIEW"}) : return Object.assign({}, state, {overlay: null});
+      return action.show? Object.assign({}, state, {overlay: "VIEW"}) : Object.assign({}, state, {overlay: null});
     case SET_MARKER:
       for (var i = 0; i < state.markersList.length; i++) {
         if (state.markersList[i].id == action.id) {

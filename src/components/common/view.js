@@ -139,6 +139,11 @@ export default class ViewBite extends Component {
       return;
     }
 
+    // User's can't vote on their own bites
+    if (this.props.currMarker.user == this.props.user.email) {
+      return;
+    }
+
     let buttons = [];
     let currVote = this.checkVote();
 
