@@ -8,7 +8,8 @@ function mapStateToProps(state) {
   return {
     overlay: state.markers.overlay,
     currMarker: state.markers.currMarker,
-    fetchingBite: state.markers.fetchingBite
+    fetchingBite: state.markers.fetchingBite,
+    user: state.auth.user,
   }
 }
 

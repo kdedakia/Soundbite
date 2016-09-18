@@ -82,6 +82,101 @@ export default class ViewBite extends Component {
     this.props.showView(false);
   }
 
+  upvote() {
+    if(this.checkVote() == "DOWNVOTE") {
+      this.cancelDownvote();
+    }
+    this.props.upvote(this.props.currMarker.firebaseId,this.props.user.email)
+  }
+
+  cancelUpvote() {
+    this.props.cancelUpvote(this.props.currMarker.firebaseId,this.props.user.email)
+  }
+
+  downvote() {
+    if(this.checkVote() == "UPVOTE") {
+      this.cancelUpvote();
+    }
+    this.props.downvote(this.props.currMarker.firebaseId,this.props.user.email)
+  }
+
+  cancelDownvote() {
+    this.props.cancelDownvote(this.props.currMarker.firebaseId,this.props.user.email)
+  }
+
+  // Options: UPVOTE, DOWNVOTE, NOVOTE
+  checkVote() {
+    let upvotes = Object.keys(this.props.currMarker.upvotes).map((v) => {return this.props.currMarker.upvotes[v].user})
+    let downvotes = Object.keys(this.props.currMarker.downvotes).map((v) => {return this.props.currMarker.downvotes[v].user})
+
+    if (upvotes.indexOf(this.props.user.email) != -1) {
+      return "UPVOTE";
+    }
+    if (downvotes.indexOf(this.props.user.email) != -1) {
+      return "DOWNVOTE";
+    }
+    return "NOVOTE";
+  }
+
+  voteCount() {
+    if (this.props.currMarker == null) {
+      return;
+    }
+
+    let upvotes = Object.keys(this.props.currMarker.upvotes).map((v) => {return this.props.currMarker.upvotes[v].user})
+    let downvotes = Object.keys(this.props.currMarker.downvotes).map((v) => {return this.props.currMarker.downvotes[v].user})
+
+    return (
+      <View>
+        <Text>Upvotes: {upvotes.length}</Text>
+        <Text>Downvotes: {downvotes.length}</Text>
+      </View>
+    )
+  }
+
+  voteBtns() {
+    if (this.props.currMarker == null) {
+      return;
+    }
+
+    let buttons = [];
+    let currVote = this.checkVote();
+
+    if (currVote == "UPVOTE") {
+      buttons.push(
+        <TouchableHighlight key="up" onPress={this.cancelUpvote.bind(this)} style={[OverlayStyles.okBtn]}>
+          <Icon name="md-arrow-dropup" style={[OverlayStyles.actionButtonIcon, styles.active]} />
+        </TouchableHighlight>
+      )
+    } else {
+      buttons.push(
+        <TouchableHighlight key="up" onPress={this.upvote.bind(this)} style={[OverlayStyles.okBtn]}>
+          <Icon name="md-arrow-dropup" style={[OverlayStyles.actionButtonIcon]} />
+        </TouchableHighlight>
+      )
+    }
+
+    if (currVote == "DOWNVOTE") {
+      buttons.push(
+        <TouchableHighlight key="down" onPress={this.cancelDownvote.bind(this)} style={[OverlayStyles.okBtn]}>
+          <Icon name="md-arrow-dropdown" style={[OverlayStyles.actionButtonIcon, styles.active]} />
+        </TouchableHighlight>
+      )
+    } else {
+      buttons.push(
+        <TouchableHighlight key="down" onPress={this.downvote.bind(this)} style={[OverlayStyles.okBtn]}>
+          <Icon name="md-arrow-dropdown" style={[OverlayStyles.actionButtonIcon]} />
+        </TouchableHighlight>
+      )
+    }
+
+    return (
+      <View style={styles.playContainer}>
+        {buttons}
+      </View>
+    );
+  }
+
   render() {
     var modalBackgroundStyle = {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
@@ -98,6 +193,7 @@ export default class ViewBite extends Component {
       content = (
         <View>
           <Text style={OverlayStyles.btnText}>ID: { this.props.currMarker.id }</Text>
+          <Text style={OverlayStyles.btnText}>Firebase ID: { this.props.currMarker.firebaseId }</Text>
           <Text style={OverlayStyles.btnText}>Title: { this.props.currMarker.title }</Text>
           <Text style={OverlayStyles.btnText}>Duration: { this.props.currMarker.duration }</Text>
           <Text style={OverlayStyles.btnText}>File: { this.props.currMarker.file }</Text>
@@ -136,11 +232,13 @@ export default class ViewBite extends Component {
               <TouchableHighlight onPress={this.playSound.bind(this,"current.mp4")} style={[OverlayStyles.okBtn,OverlayStyles.playBtn]}>
                 { this.state.isPlaying? <Icon name="md-square" style={OverlayStyles.actionButtonIcon} /> : <Icon name="md-play" style={OverlayStyles.actionButtonIcon} /> }
               </TouchableHighlight>
+
               {progressBar}
             </View>
 
             { content }
-
+            { this.voteBtns() }
+            { this.voteCount() }
           </View>
         </View>
 
@@ -155,5 +253,11 @@ var styles = StyleSheet.create({
   },
   progressBar: {
     marginBottom: 20,
+  },
+  voteBtn: {
+
+  },
+  active: {
+    color: 'red',
   }
 });

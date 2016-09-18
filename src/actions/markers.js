@@ -1,7 +1,10 @@
 import * as DB from '../utils/database'
+import { initializeApp } from 'firebase';
 
 export const ADD_MARKER = 'ADD_MARKER'
 export const REMOVE_MARKER = 'REMOVE_MARKER'
+export const UPDATE_MARKER = 'UPDATE_MARKER'
+
 export const SET_MARKER = 'SET_MARKER'
 export const SET_POSITION = 'SET_POSITION'
 export const SHOW_MAKE = 'SHOW_MAKE'
@@ -12,6 +15,10 @@ export const RECEIVE_MARKERS = 'RECEIVE_MARKERS'
 export const REQUEST_BITE = 'REQUEST_BITE'
 export const RECEIVE_BITE = 'RECEIVE_BITE'
 
+export const UPVOTE = 'UPVOTE'
+export const CANCEL_UPVOTE = 'CANCEL_UPVOTE'
+export const DOWNVOTE = 'DOWNVOTE'
+export const CANCEL_DOWNVOTE = 'CANCEL_DOWNVOTE'
 
 export function addMarker(data) {
   return { type: ADD_MARKER, data }
@@ -19,6 +26,10 @@ export function addMarker(data) {
 
 export function removeMarker(f_id) {
   return { type: REMOVE_MARKER, f_id }
+}
+
+export function updateMarker(data) {
+  return { type: UPDATE_MARKER, data }
 }
 
 export function setMarker(id) {
@@ -94,4 +105,42 @@ export function fetchMarkersIfNeeded(loc) {
       return dispatch(fetchMarkers(loc))
     }
   }
+}
+
+export function upvote(markerId,userId,f_id) {
+  firebase.database().ref().child('markers').child(markerId).child('upvotes').push({user:userId});
+
+  return { type: UPVOTE, f_id, userId }
+}
+
+export function cancelUpvote(markerId,userId) {
+  var voteRef = firebase.database().ref().child('markers').child(markerId).child('upvotes');
+
+  voteRef.orderByChild('user').equalTo(userId).on('value',(snapshot) => {
+    snapshot.forEach((data) => {
+      voteRef.child(data.key).remove()
+    })
+  })
+  voteRef.off();
+
+  return { type: CANCEL_UPVOTE }
+}
+
+export function downvote(markerId,userId,f_id) {
+  firebase.database().ref().child('markers').child(markerId).child('downvotes').push({user:userId});
+
+  return { type: DOWNVOTE, f_id, userId }
+}
+
+export function cancelDownvote(markerId,userId) {
+  var voteRef = firebase.database().ref().child('markers').child(markerId).child('downvotes');
+
+  voteRef.orderByChild('user').equalTo(userId).on('value',(snapshot) => {
+    snapshot.forEach((data) => {
+      voteRef.child(data.key).remove()
+    })
+  })
+  voteRef.off();
+
+  return { type: CANCEL_DOWNVOTE }
 }

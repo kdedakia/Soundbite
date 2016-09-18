@@ -27,6 +27,10 @@ export default class Main extends Component {
     DB.markersRef.on('child_removed', (snapshot) => {
       this.props.removeMarker(snapshot.val().f_id);
     });
+
+    DB.markersRef.on('child_changed', (snapshot) => {
+      this.props.updateMarker(snapshot.val());
+    })
   }
 
   componentWillUnmount() {
