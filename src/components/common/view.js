@@ -60,6 +60,8 @@ export default class ViewBite extends Component {
         bite.play((success) => {
           if (success) {
             console.log('successfully finished playing');
+
+            self.props.setListened(self.props.currMarker.f_id,self.props.user.email)
             clearInterval(self.state.timer);
             self.setState({sound:null, isPlaying: false, playTime: 0});
           } else {

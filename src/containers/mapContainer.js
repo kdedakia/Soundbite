@@ -12,6 +12,7 @@ function mapStateToProps(state) {
     overlay: state.markers.overlay,
     user: state.auth.user,
     refreshToken: state.auth.refreshToken,
+    listened: state.markers.listenedMarkers,
   }
 }
 

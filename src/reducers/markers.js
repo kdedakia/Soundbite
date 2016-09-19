@@ -9,7 +9,9 @@ import {
   REQUEST_MARKERS,
   RECEIVE_MARKERS,
   REQUEST_BITE,
-  RECEIVE_BITE
+  RECEIVE_BITE,
+  GET_LISTENED,
+  SET_LISTENED,
 } from '../actions/markers';
 
 const initialState = {
@@ -22,6 +24,7 @@ const initialState = {
   settings: null,
   isFetching: false,
   fetchingBite: false,
+  listenedMarkers: [],
 }
 
 export default function reducer(state=initialState, action) {
@@ -87,6 +90,18 @@ export default function reducer(state=initialState, action) {
       return Object.assign({}, state, {fetchingBite: true})
     case RECEIVE_BITE:
       return Object.assign({}, state, {fetchingBite: false})
+    case GET_LISTENED:
+      if (action.listened != null) {
+        return Object.assign({}, state, {listenedMarkers: action.listened})
+      } else {
+        return Object.assign({}, state, {listenedMarkers: []})
+      }
+    case SET_LISTENED:
+      if (state.listenedMarkers.indexOf(action.markerId) == -1) {
+        let newListened = JSON.parse(JSON.stringify(state.listenedMarkers));
+        newListened.push(action.markerId)
+        return Object.assign({}, state, {listenedMarkers: newListened})
+      }
     default:
       return state
   }

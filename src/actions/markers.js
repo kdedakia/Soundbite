@@ -1,5 +1,8 @@
 import * as DB from '../utils/database'
 import { initializeApp } from 'firebase';
+import {
+  AsyncStorage
+} from 'react-native'
 
 export const ADD_MARKER = 'ADD_MARKER'
 export const REMOVE_MARKER = 'REMOVE_MARKER'
@@ -19,6 +22,9 @@ export const UPVOTE = 'UPVOTE'
 export const CANCEL_UPVOTE = 'CANCEL_UPVOTE'
 export const DOWNVOTE = 'DOWNVOTE'
 export const CANCEL_DOWNVOTE = 'CANCEL_DOWNVOTE'
+
+export const GET_LISTENED = 'GET_LISTENED'
+export const SET_LISTENED = 'SET_LISTENED'
 
 export function addMarker(data) {
   return { type: ADD_MARKER, data }
@@ -143,4 +149,25 @@ export function cancelDownvote(markerId,userId) {
   voteRef.off();
 
   return { type: CANCEL_DOWNVOTE }
+}
+
+export function getListened(listened) {
+  return { type: GET_LISTENED, listened }
+}
+
+// TODO: Find better place to put AsyncStorage
+export function setListened(markerId,userId) {
+  // firebase.database().ref().child('users').child(userId.replace('.','')).child('listened').push(markerdId);
+
+  AsyncStorage.getItem(userId)
+  .then((listened) => {
+    arr = JSON.parse(listened);
+    if(arr.indexOf(markerId) == -1) {
+      AsyncStorage.setItem(userId,JSON.stringify(arr.push(markerId)))
+    }
+  }).catch((err) => {
+    AsyncStorage.setItem(userId,JSON.stringify([markerId]))
+  })
+
+  return { type: SET_LISTENED, markerId }
 }

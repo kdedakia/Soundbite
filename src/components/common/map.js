@@ -75,6 +75,12 @@ export default class MapBox extends Component {
 
   componentDidMount() {
     var self = this;
+    // AsyncStorage.setItem(this.props.user.email,JSON.stringify([]));
+
+    AsyncStorage.getItem(this.props.user.email)
+    .then((listened) => {
+      self.props.getListened(JSON.parse(listened))
+    });
 
     AsyncStorage.getItem('position')
     .then((pos) => {
@@ -133,7 +139,7 @@ export default class MapBox extends Component {
               {this.currPos()}
 
               {this.props.markers.map (marker =>
-                <Marker key={marker.id} {...marker} currLat={lat} currLong={lng} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} currUser={this.props.user.email}/>
+                <Marker key={marker.id} {...marker} listened={this.props.listened} currLat={lat} currLong={lng} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} currUser={this.props.user.email}/>
               )}
           </MapView>
         </View>

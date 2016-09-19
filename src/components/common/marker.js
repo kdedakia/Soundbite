@@ -29,23 +29,41 @@ export default class Marker extends Component {
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
   }
 
-  // TODO: get more pin images and set them here
   setPinImage() {
-    // if (this.props.user == this.props.currUser) {
-      // return require('../../../map-pin.png')
-      // return null;
-    // }
-    if (this.getDistance() < 0.3) {
-      return require('../../../map-pin.png')
+    if (this.props.user == this.props.currUser) {
+      return require('../../../own.png')
     }
+
+    if(this.props.listened.indexOf(this.props.f_id) == -1) {
+      if (this.getDistance() < 0.3) {
+        return require('../../../in-new.png')
+      } else {
+        return require('../../../out-new.png')
+      }
+    }
+    else {
+      if (this.getDistance() < 0.3) {
+        return require('../../../in-old.png')
+      } else {
+        return require('../../../out-old.png')
+      }
+    }
+
     return null;
+  }
+
+  voteCount() {
+    if(typeof this.props.upvotes != "undefined" && typeof this.props.downvotes != "undefined") {
+      return this.props.upvotes.length - this.props.downvotes.length;
+    }
+    return 0;
   }
 
   render() {
     return (
       <MapView.Marker
         coordinate={{latitude: this.props.latitude,longitude: this.props.longitude}}
-        title={this.props.title + " | " + this.props.user + " | " + this.getDistance()}
+        title={this.voteCount() + " | " + this.props.title + " | " + this.props.user + " | " + this.getDistance()}
         image={this.setPinImage()}
         description={"Duration: " + this.props.duration + " seconds"}
         onCalloutPress={this.inRange()? this.markerClick.bind(this,this.props.id) : () => alert("The SoundBite is too far!") }
