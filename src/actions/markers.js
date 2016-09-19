@@ -157,13 +157,12 @@ export function getListened(listened) {
 
 // TODO: Find better place to put AsyncStorage
 export function setListened(markerId,userId) {
-  // firebase.database().ref().child('users').child(userId.replace('.','')).child('listened').push(markerdId);
-
   AsyncStorage.getItem(userId)
   .then((listened) => {
     arr = JSON.parse(listened);
     if(arr.indexOf(markerId) == -1) {
-      AsyncStorage.setItem(userId,JSON.stringify(arr.push(markerId)))
+      arr.push(markerId)
+      AsyncStorage.setItem(userId,JSON.stringify(arr))
     }
   }).catch((err) => {
     AsyncStorage.setItem(userId,JSON.stringify([markerId]))
