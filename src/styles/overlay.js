@@ -18,7 +18,7 @@ var styles = StyleSheet.create({
   okBtn: {
     height: 70,
     width: 70,
-    backgroundColor: 'steelblue',
+    backgroundColor: '#77C9FA',
     borderRadius: 35,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -39,11 +39,13 @@ var styles = StyleSheet.create({
     fontSize: 20,
   },
   closeBtn: {
-    fontSize: 30,
-    width: 25,
-    height: 25,
+    fontSize: 40,
+    width: 40,
+    height: 40,
     color: 'steelblue',
     alignSelf: 'flex-end',
+    marginRight: 10,
+    marginTop: 10,
   },
   container: {
     flex: 1,

@@ -29,6 +29,10 @@ export default class MapBox extends Component {
     }
   }
 
+  resetStorage() {
+    AsyncStorage.setItem(this.props.user.email,JSON.stringify([]));
+  }
+
   currPos() {
     if (this.state.initialPosition != "unknown") {
       var pos = JSON.parse(this.state.initialPosition);
@@ -41,6 +45,43 @@ export default class MapBox extends Component {
         />
       );
     }
+  }
+
+  lastStoredPos() {
+    var self = this;
+
+    AsyncStorage.getItem(this.props.user.email)
+    .then((listened) => {
+      self.props.getListened(JSON.parse(listened))
+    });
+
+    AsyncStorage.getItem('position')
+    .then((pos) => {
+      if(pos) {
+        self.changeLocation(JSON.parse(pos))
+        self.setState({initialPosition:pos});
+      }
+    })
+    .catch((err) => {
+      console.error("Position Async Error: " + err)
+    })
+  }
+
+  currentPos() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+        AsyncStorage.setItem('position',initialPosition)
+        this.changeLocation(position,true);
+      },
+      (error) => alert("Location Error: " + error),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      var lastPosition = JSON.stringify(position);
+      this.setState({lastPosition});
+    });
   }
 
   randomVal() {
@@ -64,8 +105,12 @@ export default class MapBox extends Component {
     this.setState({mapRegion: region});
   }
 
-  changeLocation(pos) {
+  changeLocation(pos,resetZoom) {
     var region = this.state.mapRegion;
+    if (resetZoom) {
+      region.latitudeDelta = 0.015;
+      region.longitudeDelta = 0.0121;
+    }
     region.latitude = pos.coords.latitude;
     region.longitude = pos.coords.longitude;
     this.props.setPosition(pos);
@@ -73,40 +118,9 @@ export default class MapBox extends Component {
     this.setState({mapRegion:region});
   }
 
-  componentDidMount() {
-    var self = this;
-    // AsyncStorage.setItem(this.props.user.email,JSON.stringify([]));
-
-    AsyncStorage.getItem(this.props.user.email)
-    .then((listened) => {
-      self.props.getListened(JSON.parse(listened))
-    });
-
-    AsyncStorage.getItem('position')
-    .then((pos) => {
-      if(pos) {
-        self.changeLocation(JSON.parse(pos))
-        self.setState({initialPosition:pos});
-      }
-    })
-    .catch((err) => {
-      console.error("Position Async Error: " + err)
-    })
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        var initialPosition = JSON.stringify(position);
-        this.setState({initialPosition});
-        AsyncStorage.setItem('position',initialPosition)
-        self.changeLocation(position);
-      },
-      (error) => alert("Location Error: " + error),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-    );
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      var lastPosition = JSON.stringify(position);
-      this.setState({lastPosition});
-    });
+  componentWillMount() {
+    this.lastStoredPos();
+    this.currentPos();
   }
 
   componentWillUnmount() {
@@ -128,9 +142,23 @@ export default class MapBox extends Component {
       lat = pos.coords.latitude;
       lng = pos.coords.longitude;
     }
-
+    // <TouchableHighlight style={[styles.circleBtn,styles.logoutBtn]} onPress={this.props.logout.bind(this)} >
+    //   <Icon name="md-log-out" style={styles.icon} />
+    // </TouchableHighlight>
+    // <TouchableHighlight style={[styles.circleBtn,styles.refreshBtn]} onPress={this.resetStorage.bind(this)} >
+    //   <Icon name="md-refresh" style={styles.icon} />
+    // </TouchableHighlight>
     return(
       <View>
+        <View style={styles.toolbar}>
+          <TouchableHighlight style={styles.profile} onPress={this.props.logout.bind(this)}>
+            <Icon name="ios-contact-outline" style={[styles.toolbarIcon]} />
+          </TouchableHighlight>
+          <Text style={styles.title}>SoundBites</Text>
+          <TouchableHighlight style={styles.achievements}>
+            <Icon name="ios-trophy-outline" style={[styles.toolbarIcon]} />
+          </TouchableHighlight>
+        </View>
         <View style={styles.mapBox}>
           <MapView
               style={styles.map}
@@ -143,17 +171,15 @@ export default class MapBox extends Component {
               )}
           </MapView>
         </View>
+        <View style={styles.notice}>
+          <Icon name="ios-alert-outline" style={styles.noticeIcon} />
+          <Text style={styles.noticeText}>3 New Bites Nearby</Text>
+        </View>
         <TouchableHighlight style={[styles.circleBtn,styles.makeBtn]} onPress={this.toggleMake.bind(this)} >
-          <Icon name="md-mic" style={styles.icon} />
+          <Icon name="ios-add-outline" style={styles.icon} />
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.circleBtn,styles.logoutBtn]} onPress={this.props.logout.bind(this)} >
-          <Icon name="md-log-out" style={styles.icon} />
-        </TouchableHighlight>
-        <TouchableHighlight style={[styles.circleBtn,styles.refreshBtn]} onPress={this.props.refreshId.bind(this,this.props.refreshToken)} >
-          <Icon name="md-refresh" style={styles.icon} />
-        </TouchableHighlight>
-        <TouchableHighlight style={[styles.circleBtn,styles.spoofBtn]} onPress={this.spoofPos.bind(this)} >
-          <Icon name="md-compass" style={styles.icon} />
+        <TouchableHighlight style={[styles.circleBtn,styles.spoofBtn]} onPress={this.currentPos.bind(this)} >
+          <Icon name="ios-locate-outline" style={styles.icon} />
         </TouchableHighlight>
       </View>
     );
@@ -162,9 +188,54 @@ export default class MapBox extends Component {
 }
 
 var styles = StyleSheet.create({
+  toolbar: {
+    height: 50,
+    width: Dimensions.get('window').width,
+    backgroundColor: '#70B0E2',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  title: {
+    color: 'white',
+    fontSize: 20,
+  },
+  toolbarIcon: {
+    color: 'white',
+    fontSize: 40,
+    height: 40,
+  },
+  profile: {
+    marginLeft: 10,
+  },
+  achievements: {
+    marginRight: 10,
+  },
+  notice: {
+    position: 'absolute',
+    top: 70,
+    left: (Dimensions.get('window').width-170)/2,
+    width: 170,
+    height: 30,
+    borderRadius: 20,
+    backgroundColor: '#77C9FA',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noticeIcon: {
+    color: 'white',
+    fontSize: 20,
+    height: 20,
+    marginRight: 5,
+  },
+  noticeText: {
+    color: 'white',
+  },
   mapBox: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height-50,
     alignItems: 'center',
     flex: 1,
   },
@@ -177,10 +248,10 @@ var styles = StyleSheet.create({
   },
   circleBtn: {
     position: 'absolute',
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     borderRadius: 40,
-    backgroundColor: 'steelblue',
+    backgroundColor: '#77C9FA',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

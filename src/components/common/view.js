@@ -152,13 +152,13 @@ export default class ViewBite extends Component {
     if (currVote == "UPVOTE") {
       buttons.push(
         <TouchableHighlight key="up" onPress={this.cancelUpvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-arrow-dropup" style={[OverlayStyles.actionButtonIcon, styles.active]} />
+          <Icon name="md-thumbs-up" style={[OverlayStyles.actionButtonIcon, styles.active]} />
         </TouchableHighlight>
       )
     } else {
       buttons.push(
         <TouchableHighlight key="up" onPress={this.upvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-arrow-dropup" style={[OverlayStyles.actionButtonIcon]} />
+          <Icon name="md-thumbs-up" style={[OverlayStyles.actionButtonIcon]} />
         </TouchableHighlight>
       )
     }
@@ -166,13 +166,13 @@ export default class ViewBite extends Component {
     if (currVote == "DOWNVOTE") {
       buttons.push(
         <TouchableHighlight key="down" onPress={this.cancelDownvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-arrow-dropdown" style={[OverlayStyles.actionButtonIcon, styles.active]} />
+          <Icon name="md-thumbs-down" style={[OverlayStyles.actionButtonIcon, styles.active]} />
         </TouchableHighlight>
       )
     } else {
       buttons.push(
         <TouchableHighlight key="down" onPress={this.downvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-arrow-dropdown" style={[OverlayStyles.actionButtonIcon]} />
+          <Icon name="md-thumbs-down" style={[OverlayStyles.actionButtonIcon]} />
         </TouchableHighlight>
       )
     }

@@ -203,7 +203,7 @@ export default class MakeBite extends Component {
           <View style={[OverlayStyles.innerContainer, innerContainerTransparentStyle]}>
             <View style={OverlayStyles.innerHeader}>
               <TouchableHighlight onPress={this.props.showMake.bind(this,false)}>
-                <Icon name="md-close" style={OverlayStyles.closeBtn}/>
+                <Icon name="ios-close-circle-outline" style={OverlayStyles.closeBtn}/>
               </TouchableHighlight>
             </View>
             <TextInput
