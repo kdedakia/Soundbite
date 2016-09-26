@@ -142,7 +142,7 @@ export default class MapBox extends Component {
       lat = pos.coords.latitude;
       lng = pos.coords.longitude;
     }
-    
+
     // <TouchableHighlight style={[styles.circleBtn,styles.refreshBtn]} onPress={this.resetStorage.bind(this)} >
     //   <Icon name="md-refresh" style={styles.icon} />
     // </TouchableHighlight>
@@ -165,7 +165,7 @@ export default class MapBox extends Component {
               {this.currPos()}
 
               {this.props.markers.map (marker =>
-                <Marker key={marker.id} {...marker} listened={this.props.listened} currLat={lat} currLong={lng} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} currUser={this.props.user.email}/>
+                <Marker key={marker.f_id} {...marker} listened={this.props.listened} currLat={lat} currLong={lng} setMarker={this.props.setMarker} fetchBite={this.props.fetchBite} currUser={this.props.user.email}/>
               )}
           </MapView>
         </View>

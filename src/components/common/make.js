@@ -26,6 +26,7 @@ export default class MakeBite extends Component {
 
     this.state = {
       isRecording: false,
+      recordedSound: false,
       recTime: 0,
       timer: null, //Make better?
       sound: null, //Remove from state?
@@ -66,6 +67,7 @@ export default class MakeBite extends Component {
   stopRecording() {
     return new Promise((resolve,reject) => {
       Record.stopRecord();
+      this.setState({recordedSound: true});
       clearInterval(this.state.timer);
       resolve();
     })
@@ -103,6 +105,8 @@ export default class MakeBite extends Component {
   addMarker() {
     if (this.state.isRecording) {
       this.stopRecording().then(() => this.uploadMarker());
+    } else if (this.state.text == null){
+      alert("Please enter a name for the SoundBite.");
     } else {
       this.uploadMarker();
     }
@@ -146,39 +150,45 @@ export default class MakeBite extends Component {
     });
   }
 
-  // TODO: fix this for dynamic icons
   getButtons() {
-    var recText;
-    var playText;
+    var recBtn;
+    var playBtn;
 
     if (this.state.isRecording) {
-      recText = "STOP";
+      recBtn = (
+        <TouchableHighlight onPress={this.recordSound.bind(this,TEMPAUDIOFILE)} style={OverlayStyles.okBtn}>
+            <Icon name="md-square" style={OverlayStyles.actionButtonIcon} />
+        </TouchableHighlight>)
     } else {
-      recText = "RECORD SOUND";
+      recBtn = (
+        <TouchableHighlight onPress={this.recordSound.bind(this,TEMPAUDIOFILE)} style={OverlayStyles.okBtn}>
+            <Icon name="md-microphone" style={OverlayStyles.actionButtonIcon} />
+        </TouchableHighlight>)
     }
 
-    if (this.state.sound == null) {
-      playText = "PLAY SOUND";
-    } else {
-      playText = "STOP SOUND";
+    if (this.state.recordedSound && this.state.sound == null) {
+      playBtn = (
+        <TouchableHighlight onPress={this.playSound.bind(this,TEMPAUDIOFILE)} style={OverlayStyles.okBtn}>
+            <Icon name="md-play" style={OverlayStyles.actionButtonIcon} />
+        </TouchableHighlight>)
+    } else if (this.state.recordedSound) {
+      playBtn = (
+        <TouchableHighlight onPress={this.playSound.bind(this,TEMPAUDIOFILE)} style={OverlayStyles.okBtn}>
+            <Icon name="md-square" style={OverlayStyles.actionButtonIcon} />
+        </TouchableHighlight>)
     }
-    // <Text style={OverlayStyles.btnText}>{recText}</Text>
-    // <Text style={OverlayStyles.btnText}>{playText}</Text>
-    // <Text style={OverlayStyles.btnText}>OK</Text>
 
     return (
       <View style={OverlayStyles.btnContainer}>
-        <TouchableHighlight onPress={this.recordSound.bind(this,TEMPAUDIOFILE)} style={OverlayStyles.okBtn}>
-            <Icon name="md-microphone" style={OverlayStyles.actionButtonIcon} />
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this.playSound.bind(this,TEMPAUDIOFILE)} style={OverlayStyles.okBtn}>
-            <Icon name="md-play" style={OverlayStyles.actionButtonIcon} />
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this.addMarker.bind(this)} style={OverlayStyles.okBtn}>
-            <Icon name="md-checkmark" style={OverlayStyles.actionButtonIcon} />
-        </TouchableHighlight>
+        {recBtn}
+        {playBtn}
       </View>
     );
+  }
+
+  closeModal() {
+    this.setState({recordedSound:false,sound:null});
+    this.props.showMake(false);
   }
 
   render () {
@@ -192,29 +202,42 @@ export default class MakeBite extends Component {
       backgroundColor: '#ddd'
     };
 
+    var saveBtn;
+    if (this.state.recordedSound) {
+      saveBtn = (
+        <TouchableHighlight onPress={this.addMarker.bind(this)} style={styles.saveBtn}>
+          <Text style={styles.saveBtnText}>Save</Text>
+        </TouchableHighlight>
+      )
+    }
+
     return (
       <Modal
         animationType={this.state.animationType}
         transparent={true}
         visible={this.props.overlay == "MAKE"}
-        onRequestClose={() => {this.props.showMake(false)}} >
+        onRequestClose={() => {this.closeModal()}} >
 
         <View style={[OverlayStyles.container, modalBackgroundStyle]}>
           <View style={[OverlayStyles.innerContainer, innerContainerTransparentStyle]}>
             <View style={OverlayStyles.innerHeader}>
-              <TouchableHighlight onPress={this.props.showMake.bind(this,false)}>
+              <Text style={OverlayStyles.title}>Create SoundBite</Text>
+              <TouchableHighlight onPress={this.closeModal.bind(this)}>
                 <Icon name="ios-close-circle-outline" style={OverlayStyles.closeBtn}/>
               </TouchableHighlight>
             </View>
             <TextInput
               style={styles.inputTitle}
-              placeholder="Enter Text"
+              selectionColor="#77C9FA"
+              underlineColorAndroid="#77C9FA"
+              placeholder="Enter Title"
               onChangeText={(text) => this.setState({text})} />
             {this.getButtons.bind(this)()}
             <View style={{width:300}}>
               <Text style={styles.status}>Duration: {this.state.recTime.toPrecision(3)}</Text>
               <Text style={styles.status}>Recording: {this.state.isRecording.toString()}</Text>
             </View>
+            {saveBtn}
           </View>
         </View>
 
@@ -238,15 +261,30 @@ export default class MakeBite extends Component {
 var styles = StyleSheet.create({
   inputTitle: {
     height: 60,
-    color: 'steelblue',
+    color: 'black',
     fontSize: 20,
     width: Dimensions.get('window').width-80,
     alignSelf: 'center',
     flexDirection: 'row',
   },
   status: {
-    color: 'green',
+    color: '#77C9FA',
     textAlign: 'center',
     fontSize: 14,
   },
+  saveBtn: {
+    backgroundColor: '#77C9FA',
+    width: 100,
+    height: 50,
+    borderRadius: 20,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+    marginRight: 20,
+  },
+  saveBtnText: {
+    color: 'white',
+    fontSize: 20,
+  }
 });

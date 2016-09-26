@@ -2,17 +2,8 @@ import {StyleSheet} from 'react-native';
 import Dimensions from 'Dimensions';
 
 var styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    width: Dimensions.get('window').width,
-    height: 350,
-    top: 0,
-    left: 0,
-    backgroundColor: 'blue',
-  },
   btnContainer: {
     flexDirection:'row',
-    justifyContent: 'space-between',
     padding: 20,
   },
   okBtn: {
@@ -23,6 +14,7 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 20,
   },
   playBtn: {
     alignSelf: 'center',
@@ -42,10 +34,7 @@ var styles = StyleSheet.create({
     fontSize: 40,
     width: 40,
     height: 40,
-    color: 'steelblue',
-    alignSelf: 'flex-end',
-    marginRight: 10,
-    marginTop: 10,
+    color: 'white',
   },
   container: {
     flex: 1,
@@ -55,12 +44,23 @@ var styles = StyleSheet.create({
   },
   innerContainer: {
     borderRadius: 10,
-    height: Dimensions.get('window').height-100,
+    minHeight: 400,
     backgroundColor: '#fff',
   },
   innerHeader: {
+    backgroundColor: '#77C9FA',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    padding: 10,
     marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
+  title: {
+    color: 'white',
+    fontSize: 20,
+  }
 });
 
 export default styles;
