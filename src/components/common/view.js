@@ -26,6 +26,7 @@ export default class ViewBite extends Component {
       transparent: true,
       timer: null,
       playTime: 0.0,
+      playedSound: false,
     }
   }
 
@@ -63,7 +64,7 @@ export default class ViewBite extends Component {
 
             self.props.setListened(self.props.currMarker.f_id,self.props.user.email)
             clearInterval(self.state.timer);
-            self.setState({sound:null, isPlaying: false, playTime: 0});
+            self.setState({sound:null, isPlaying: false, playTime: 0,playedSound: true});
           } else {
             console.log('playback failed due to audio decoding errors');
           }
@@ -137,7 +138,8 @@ export default class ViewBite extends Component {
   }
 
   voteBtns() {
-    if (this.props.currMarker == null) {
+    // Can only vote after finished listening
+    if (this.props.currMarker == null || !this.state.playedSound) {
       return;
     }
 
@@ -151,28 +153,35 @@ export default class ViewBite extends Component {
 
     if (currVote == "UPVOTE") {
       buttons.push(
-        <TouchableHighlight key="up" onPress={this.cancelUpvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-thumbs-up" style={[OverlayStyles.actionButtonIcon, styles.active]} />
+        <TouchableHighlight key="up" onPress={this.cancelUpvote.bind(this)} style={[OverlayStyles.okBtn,styles.voteBtn]}>
+          <Icon name="md-thumbs-up" style={[OverlayStyles.actionButtonIcon,styles.voteIcon, styles.active]} />
         </TouchableHighlight>
       )
     } else {
       buttons.push(
-        <TouchableHighlight key="up" onPress={this.upvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-thumbs-up" style={[OverlayStyles.actionButtonIcon]} />
+        <TouchableHighlight key="up" onPress={this.upvote.bind(this)} style={[OverlayStyles.okBtn,styles.voteBtn]}>
+          <Icon name="md-thumbs-up" style={[OverlayStyles.actionButtonIcon,styles.voteIcon]} />
         </TouchableHighlight>
       )
     }
 
+    let upvotes = Object.keys(this.props.currMarker.upvotes).map((v) => {return this.props.currMarker.upvotes[v].user})
+    let downvotes = Object.keys(this.props.currMarker.downvotes).map((v) => {return this.props.currMarker.downvotes[v].user})
+    let score = upvotes.length - downvotes.length;
+    buttons.push(
+      <Text key="count" style={styles.voteCount}>{score}</Text>
+    )
+
     if (currVote == "DOWNVOTE") {
       buttons.push(
-        <TouchableHighlight key="down" onPress={this.cancelDownvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-thumbs-down" style={[OverlayStyles.actionButtonIcon, styles.active]} />
+        <TouchableHighlight key="down" onPress={this.cancelDownvote.bind(this)} style={[OverlayStyles.okBtn,styles.voteBtn]}>
+          <Icon name="md-thumbs-down" style={[OverlayStyles.actionButtonIcon,styles.voteIcon, styles.active]} />
         </TouchableHighlight>
       )
     } else {
       buttons.push(
-        <TouchableHighlight key="down" onPress={this.downvote.bind(this)} style={[OverlayStyles.okBtn]}>
-          <Icon name="md-thumbs-down" style={[OverlayStyles.actionButtonIcon]} />
+        <TouchableHighlight key="down" onPress={this.downvote.bind(this)} style={[OverlayStyles.okBtn,styles.voteBtn]}>
+          <Icon name="md-thumbs-down" style={[OverlayStyles.actionButtonIcon,styles.voteIcon]} />
         </TouchableHighlight>
       )
     }
@@ -193,12 +202,9 @@ export default class ViewBite extends Component {
     if (this.props.currMarker != null) {
       content = (
         <View>
-          <Text style={OverlayStyles.btnText}>ID: { this.props.currMarker.id }</Text>
-          <Text style={OverlayStyles.btnText}>Firebase ID: { this.props.currMarker.firebaseId }</Text>
-          <Text style={OverlayStyles.btnText}>Title: { this.props.currMarker.title }</Text>
-          <Text style={OverlayStyles.btnText}>Duration: { this.props.currMarker.duration }</Text>
-          <Text style={OverlayStyles.btnText}>File: { this.props.currMarker.file }</Text>
-          <Text style={OverlayStyles.btnText}>User: { this.props.currMarker.user }</Text>
+          <Text style={[OverlayStyles.btnText,styles.title]}>{ this.props.currMarker.title }</Text>
+          <Text style={[OverlayStyles.btnText,styles.user]}>{ this.props.currMarker.user }</Text>
+          <Text style={[OverlayStyles.btnText,styles.duration]}>{ this.props.currMarker.duration }s</Text>
         </View>
       )
     }
@@ -223,23 +229,24 @@ export default class ViewBite extends Component {
         <View style={OverlayStyles.container}>
           <View style={OverlayStyles.innerContainer}>
             <View style={OverlayStyles.innerHeader}>
+              <Text style={OverlayStyles.title}>SoundBite</Text>
               <TouchableHighlight onPress={this.closeModal.bind(this)}>
-                <Icon name="md-close" style={OverlayStyles.closeBtn}/>
+                <Icon name="ios-close-circle-outline" style={OverlayStyles.closeBtn}/>
               </TouchableHighlight>
             </View>
 
             {loading}
+            {content}
+
             <View style={styles.playContainer}>
               <TouchableHighlight onPress={this.playSound.bind(this,"current.mp4")} style={[OverlayStyles.okBtn,OverlayStyles.playBtn]}>
                 { this.state.isPlaying? <Icon name="md-square" style={OverlayStyles.actionButtonIcon} /> : <Icon name="md-play" style={OverlayStyles.actionButtonIcon} /> }
               </TouchableHighlight>
-
               {progressBar}
             </View>
-
-            { content }
-            { this.voteBtns() }
-            { this.voteCount() }
+            <View style={styles.voteContainer}>
+              { this.voteBtns() }
+            </View>
           </View>
         </View>
 
@@ -249,16 +256,44 @@ export default class ViewBite extends Component {
 }
 
 var styles = StyleSheet.create({
+  title: {
+    fontSize: 50,
+    alignSelf: 'flex-start',
+    paddingLeft: 20,
+  },
+  user: {
+    alignSelf: 'flex-start',
+    paddingLeft: 20,
+  },
+  duration: {
+    alignSelf: 'flex-start',
+    paddingLeft: 20,
+  },
   playContainer: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: 20,
   },
   progressBar: {
     marginBottom: 20,
   },
-  voteBtn: {
-
-  },
   active: {
     color: 'red',
+  },
+  voteContainer: {
+    marginVertical: 20,
+  },
+  voteBtn: {
+    height: 40,
+    width: 40,
+  },
+  voteCount: {
+    fontSize: 30,
+    color: '#77C9FA',
+    width: 40,
+    alignSelf: 'center',
+  },
+  voteIcon: {
+    fontSize: 30,
+    height: 30,
   }
 });

@@ -23,6 +23,7 @@ export default class Profile extends Component {
         <View style={OverlayStyles.container}>
           <View style={OverlayStyles.innerContainer}>
             <View style={OverlayStyles.innerHeader}>
+              <Text style={OverlayStyles.title}>User Profile</Text>
               <TouchableHighlight onPress={this.props.showProfile.bind(this,false)}>
                 <Icon name="ios-close-circle-outline" style={OverlayStyles.closeBtn}/>
               </TouchableHighlight>
@@ -64,7 +65,9 @@ var styles = StyleSheet.create({
   },
   logoutBtn: {
     backgroundColor: 'red',
-    marginTop: 50
+    marginTop: 50,
+    width: 150,
+    alignItems: 'center',
   },
   logoutText: {
     color: 'white',

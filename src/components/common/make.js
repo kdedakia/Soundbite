@@ -30,8 +30,6 @@ export default class MakeBite extends Component {
       recTime: 0,
       timer: null, //Make better?
       sound: null, //Remove from state?
-      animationType: 'fade',
-      transparent: true,
     };
   }
 
@@ -192,16 +190,6 @@ export default class MakeBite extends Component {
   }
 
   render () {
-    var modalBackgroundStyle = {
-      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
-    };
-    var innerContainerTransparentStyle = this.state.transparent
-      ? {backgroundColor: '#fff'}
-      : null;
-    var activeButtonStyle = {
-      backgroundColor: '#ddd'
-    };
-
     var saveBtn;
     if (this.state.recordedSound) {
       saveBtn = (
@@ -213,13 +201,13 @@ export default class MakeBite extends Component {
 
     return (
       <Modal
-        animationType={this.state.animationType}
+        animationType={"fade"}
         transparent={true}
         visible={this.props.overlay == "MAKE"}
         onRequestClose={() => {this.closeModal()}} >
 
-        <View style={[OverlayStyles.container, modalBackgroundStyle]}>
-          <View style={[OverlayStyles.innerContainer, innerContainerTransparentStyle]}>
+        <View style={[OverlayStyles.container]}>
+          <View style={[OverlayStyles.innerContainer]}>
             <View style={OverlayStyles.innerHeader}>
               <Text style={OverlayStyles.title}>Create SoundBite</Text>
               <TouchableHighlight onPress={this.closeModal.bind(this)}>
