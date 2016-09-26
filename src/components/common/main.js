@@ -11,6 +11,7 @@ import LoginContainer from '../../containers/loginContainer';
 import MapContainer from '../../containers/mapContainer';
 import MakeContainer from '../../containers/makeContainer';
 import ViewContainer from '../../containers/viewContainer';
+import ProfileContainer from '../../containers/profileContainer';
 import * as DB from '../../utils/database'
 
 export default class Main extends Component {
@@ -42,6 +43,7 @@ export default class Main extends Component {
           <MapContainer />
           <MakeContainer />
           <ViewContainer />
+          <ProfileContainer />
         </View>
       )
     }

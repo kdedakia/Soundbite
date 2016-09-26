@@ -185,12 +185,6 @@ export default class ViewBite extends Component {
   }
 
   render() {
-    var modalBackgroundStyle = {
-      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
-    };
-    var innerContainerTransparentStyle = this.state.transparent
-      ? {backgroundColor: '#fff'}
-      : null;
     var activeButtonStyle = {
       backgroundColor: '#ddd'
     };
@@ -226,8 +220,8 @@ export default class ViewBite extends Component {
         visible={this.props.overlay == "VIEW"}
         onRequestClose={() => {this.props.showMake(false)}} >
 
-        <View style={[OverlayStyles.container, modalBackgroundStyle]}>
-          <View style={[OverlayStyles.innerContainer, innerContainerTransparentStyle]}>
+        <View style={OverlayStyles.container}>
+          <View style={OverlayStyles.innerContainer}>
             <View style={OverlayStyles.innerHeader}>
               <TouchableHighlight onPress={this.closeModal.bind(this)}>
                 <Icon name="md-close" style={OverlayStyles.closeBtn}/>

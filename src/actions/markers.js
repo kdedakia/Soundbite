@@ -10,8 +10,10 @@ export const UPDATE_MARKER = 'UPDATE_MARKER'
 
 export const SET_MARKER = 'SET_MARKER'
 export const SET_POSITION = 'SET_POSITION'
+
 export const SHOW_MAKE = 'SHOW_MAKE'
 export const SHOW_VIEW = 'SHOW_VIEW'
+export const SHOW_PROFILE = 'SHOW_PROFILE'
 
 export const REQUEST_MARKERS = 'REQUEST_MARKERS'
 export const RECEIVE_MARKERS = 'RECEIVE_MARKERS'
@@ -52,6 +54,10 @@ export function showMake(show) {
 
 export function showView(show) {
   return { type: SHOW_VIEW, show }
+}
+
+export function showProfile(show) {
+  return { type: SHOW_PROFILE, show }
 }
 
 function requestMarkers(loc) {

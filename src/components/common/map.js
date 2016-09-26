@@ -142,16 +142,14 @@ export default class MapBox extends Component {
       lat = pos.coords.latitude;
       lng = pos.coords.longitude;
     }
-    // <TouchableHighlight style={[styles.circleBtn,styles.logoutBtn]} onPress={this.props.logout.bind(this)} >
-    //   <Icon name="md-log-out" style={styles.icon} />
-    // </TouchableHighlight>
+    
     // <TouchableHighlight style={[styles.circleBtn,styles.refreshBtn]} onPress={this.resetStorage.bind(this)} >
     //   <Icon name="md-refresh" style={styles.icon} />
     // </TouchableHighlight>
     return(
       <View>
         <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.profile} onPress={this.props.logout.bind(this)}>
+          <TouchableHighlight style={styles.profile} onPress={this.props.showProfile.bind(this,true)}>
             <Icon name="ios-contact-outline" style={[styles.toolbarIcon]} />
           </TouchableHighlight>
           <Text style={styles.title}>SoundBites</Text>

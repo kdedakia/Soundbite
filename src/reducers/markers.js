@@ -6,6 +6,7 @@ import {
   SET_POSITION,
   SHOW_MAKE,
   SHOW_VIEW,
+  SHOW_PROFILE,
   REQUEST_MARKERS,
   RECEIVE_MARKERS,
   REQUEST_BITE,
@@ -64,6 +65,8 @@ export default function reducer(state=initialState, action) {
       return action.show? Object.assign({}, state, {overlay: "MAKE"}) : Object.assign({}, state, {overlay: null});
     case SHOW_VIEW:
       return action.show? Object.assign({}, state, {overlay: "VIEW"}) : Object.assign({}, state, {overlay: null});
+    case SHOW_PROFILE:
+      return action.show? Object.assign({}, state, {overlay: "PROFILE"}) : Object.assign({}, state, {overlay: null});
     case SET_MARKER:
       for (var i = 0; i < state.markersList.length; i++) {
         if (state.markersList[i].id == action.id) {
