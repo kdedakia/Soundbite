@@ -12,6 +12,7 @@ import Dimensions from 'Dimensions';
 import MapView from 'react-native-maps';
 import Marker from './marker'
 import Icon from 'react-native-vector-icons/Ionicons';
+import { inRange } from '../../utils/helper'
 
 export default class MapBox extends Component {
   constructor(props) {
@@ -27,6 +28,10 @@ export default class MapBox extends Component {
         longitudeDelta: 0.0121,
       },
     }
+  }
+
+  componentDidMount() {
+    // this.props.showMake(true);
   }
 
   resetStorage() {
@@ -135,6 +140,41 @@ export default class MapBox extends Component {
     }
   }
 
+  // Number of new bites that are within range
+  newBites() {
+    if (this.props.markers.length == 0) {
+      return;
+    }
+
+    let newBites = 0;
+    let maxDistance = 0.3;
+
+    for (var i=0;i<this.props.markers.length;i++) {
+      let m = this.props.markers[i];
+      if (inRange(this.props.position.coords.latitude,this.props.position.coords.longitude,m.latitude,m.longitude,maxDistance)) {
+          if (this.props.listened.indexOf(m.f_id) == -1 && m.user != this.props.user.email) {
+            newBites++;
+          }
+      }
+    }
+
+    let msg;
+    if (newBites == 0) {
+      return;
+    } else if (newBites == 1) {
+      msg = newBites.toString() + " New Bite Nearby";
+    } else if(newBites > 1) {
+      msg = newBites.toString() + " New Bites Nearby";
+    }
+
+    return (
+      <View style={styles.notice}>
+        <Icon name="ios-alert-outline" style={styles.noticeIcon} />
+        <Text style={styles.noticeText}>{msg}</Text>
+      </View>
+    );
+  }
+
   render() {
     let pos, lat, lng;
     if (this.state.initialPosition != "unknown") {
@@ -169,14 +209,11 @@ export default class MapBox extends Component {
               )}
           </MapView>
         </View>
-        <View style={styles.notice}>
-          <Icon name="ios-alert-outline" style={styles.noticeIcon} />
-          <Text style={styles.noticeText}>3 New Bites Nearby</Text>
-        </View>
+        {this.newBites()}
         <TouchableHighlight style={[styles.circleBtn,styles.makeBtn]} onPress={this.toggleMake.bind(this)} >
           <Icon name="ios-add-outline" style={styles.icon} />
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.circleBtn,styles.spoofBtn]} onPress={this.currentPos.bind(this)} >
+        <TouchableHighlight style={[styles.circleBtn,styles.spoofBtn]} onPress={this.spoofPos.bind(this)} >
           <Icon name="ios-locate-outline" style={styles.icon} />
         </TouchableHighlight>
       </View>
